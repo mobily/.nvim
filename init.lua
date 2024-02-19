@@ -1,0 +1,6 @@
+require "options"
+require "lazy.install"
+require "lazy.plugins"
+require "lazy.journal"
+require "mappings"
+require "hls"
