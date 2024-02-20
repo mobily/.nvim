@@ -1,7 +1,7 @@
 local M = {}
 
-local utils = require "utils"
-local fn = require "utils.fn"
+local utils = require("utils")
+local fn = require("utils.fn")
 
 local schedule = function(fn)
   return function(args)

@@ -1,4 +1,4 @@
-local colors = require "ui.colors"
+local colors = require("ui.colors")
 
 return {
   AlphaButtonShortcut = {fg = colors.yellow["300"]},

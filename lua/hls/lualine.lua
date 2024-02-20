@@ -1,5 +1,5 @@
-local theme = require "lualine.themes.auto"
-local colors = require "ui.colors"
+local theme = require("lualine.themes.auto")
+local colors = require("ui.colors")
 
 local default_colors = {
   bg = "none",

@@ -1,7 +1,7 @@
 local M = {}
 
-local utils = require "utils"
-local fn = require "utils.fn"
+local utils = require("utils")
+local fn = require("utils.fn")
 
 local commands = require("mind.commands").commands
 
@@ -51,9 +51,9 @@ M.actions = {
     name = "delete node and file",
     handler = schedule(
       function(args)
-        local mind_ui = require "mind.ui"
-        local mind_node = require "mind.node"
-        local mind_data = require "mind.data"
+        local mind_ui = require("mind.ui")
+        local mind_node = require("mind.node")
+        local mind_data = require("mind.data")
         local tree = args.get_tree()
         local save_tree = args.save_tree
         local opts = args.opts
@@ -138,10 +138,10 @@ M.options = {
   end,
   inject = function(fn)
     local line, _ = unpack(vim.api.nvim_win_get_cursor(0))
-    local mind = require "mind"
-    local mind_ui = require "mind.ui"
-    local mind_node = require "mind.node"
-    local mind_commands = require "mind.commands"
+    local mind = require("mind")
+    local mind_ui = require("mind.ui")
+    local mind_node = require("mind.node")
+    local mind_commands = require("mind.commands")
 
     local current_line = line - 1
 

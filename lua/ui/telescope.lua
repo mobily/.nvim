@@ -1,9 +1,9 @@
 local M = {}
 -- support for hls - https://github.com/nvim-telescope/telescope.nvim/blob/e8c01bab917537ba4f54193c29b77bf4a04584d3/lua/telescope/builtin/__files.lua#L411
 M.gen_from_buffer_lines = function(opts)
-  local entry_display = require "telescope.pickers.entry_display"
-  local utils = require "telescope.utils"
-  local make_entry = require "telescope.make_entry"
+  local entry_display = require("telescope.pickers.entry_display")
+  local utils = require("telescope.utils")
+  local make_entry = require("telescope.make_entry")
 
   opts = opts or {}
 

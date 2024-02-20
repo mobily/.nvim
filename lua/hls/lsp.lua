@@ -1,5 +1,4 @@
-local ui = require "ui"
-local colors = require "ui.colors"
+local colors = require("ui.colors")
 
 return {
   -- LSP References

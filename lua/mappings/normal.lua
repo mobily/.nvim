@@ -1,15 +1,15 @@
-local utils = require "utils"
-local buffers = require "utils.buffers"
-local fn = require "utils.fn"
-local harpoon = require "harpoon"
+local utils = require("utils")
+local buffers = require("utils.buffers")
+local fn = require("utils.fn")
+local harpoon = require("harpoon")
 
 local map = utils.keymap_factory("n")
 local map_with_visual = utils.keymap_factory({"n", "v"})
 
 local cmd = utils.cmd
 
-local hop = require "hop"
-local telescope_ui = require "ui.telescope"
+local hop = require("hop")
+local telescope_ui = require("ui.telescope")
 
 local is_default_buffer = function()
   return buffers.is_not_focused_buffer("NvimTree_1", "mind", "spectre", "gen.nvim")
@@ -228,7 +228,7 @@ map(
   "<D-.>",
   function()
     if is_default_buffer() then
-      local menu = require "pickers.code-action"
+      local menu = require("pickers.code-action")
       require("ui.picker").make(menu)
     end
     -- vim.lsp.buf.code_action()
@@ -240,7 +240,7 @@ map(
   "<D-m>",
   function()
     if is_default_buffer() then
-      local menu = require "pickers.marks"
+      local menu = require("pickers.marks")
       require("ui.picker").make(menu)
     end
   end,
@@ -277,13 +277,13 @@ map_with_visual(
       bufname,
       {
         ["NvimTree_1"] = function()
-          return require "pickers.nvim-tree"
+          return require("pickers.nvim-tree")
         end,
         ["mind"] = function()
-          return require "pickers.mind"
+          return require("pickers.mind")
         end,
         ["default"] = function()
-          return require "pickers.command-palette"
+          return require("pickers.command-palette")
         end
       }
     )
@@ -296,7 +296,7 @@ map(
   "<D-o>",
   function()
     if is_default_buffer() then
-      local menu = require "pickers.glance"
+      local menu = require("pickers.glance")
       require("ui.picker").make(menu)
     end
   end
@@ -306,7 +306,7 @@ map(
   "<D-0>",
   function()
     if is_default_buffer() then
-      local menu = require "pickers.terminal"
+      local menu = require("pickers.terminal")
       require("ui.picker").make(menu)
     end
   end
@@ -315,10 +315,10 @@ map(
 map(
   "<leader>j",
   function()
-    local mind = require "mind"
-    local mind_ui = require "mind.ui"
-    local mind_node = require "mind.node"
-    local mind_commands = require "mind.commands"
+    local mind = require("mind")
+    local mind_ui = require("mind.ui")
+    local mind_node = require("mind.node")
+    local mind_commands = require("mind.commands")
 
     mind.wrap_project_tree_fn(
       function(args)
@@ -341,7 +341,7 @@ map(
   "<D-CR>",
   function()
     if is_default_buffer() then
-      local menu = require "pickers.harpoon"
+      local menu = require("pickers.harpoon")
       menu.toggle(harpoon:list())
     end
   end

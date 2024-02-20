@@ -1,7 +1,7 @@
 local M = {}
 
-local utils = require "utils"
-local fn = require "utils.fn"
+local utils = require("utils")
+local fn = require("utils.fn")
 
 local make_finder = function(directory)
   local root = vim.loop.cwd()

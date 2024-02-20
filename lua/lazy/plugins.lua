@@ -292,7 +292,7 @@ lazy.setup {
 
       local terminal = {
         type = "terminal",
-        command = " /Users/mobily/.config/nvim/lua/lazy/thisisfine.sh",
+        command = vim.fn.expand("$HOME") .. "/.config/nvim/lua/lazy/thisisfine.sh",
         width = 46,
         height = 25,
         opts = {
@@ -309,13 +309,6 @@ lazy.setup {
           type = "group",
           val = {
             button("p", "ﱮ  Restore Session", ":WorkspacesOpen<CR>"),
-            -- button("1", "﬌  Blocks", ":WorkspacesOpen blocks<CR>", 3),
-            -- button("2", "﬌  Localized", ":WorkspacesOpen localized<CR>", 3),
-            -- button("3", "﬌  ts-belt", ":WorkspacesOpen ts-belt<CR>", 3),
-            -- button("4", "﬌  stacks", ":WorkspacesOpen stacks<CR>", 3),
-            -- button("5", "﬌  Archeeve", ":WorkspacesOpen archeeve<CR>", 3),
-            -- button("גּ b", "  File Browser", ":Telescope file_browser<CR>"),
-            -- button("גּ p", "  Find File", ":Telescope find_files<CR>"),
             button("f", "  Recent Files", ":Telescope oldfiles<CR>"),
             button("u", "  Update Plugins", ":Lazy update<CR>"),
             button("q", "  Quit", ":qa<CR>")
@@ -497,7 +490,7 @@ lazy.setup {
       "NvimTreeFocus"
     },
     config = function()
-      local utils = require "utils"
+      local utils = require("utils")
       local map = utils.keymap_factory("n")
 
       require("nvim-tree").setup {
@@ -598,7 +591,7 @@ lazy.setup {
           }
         },
         on_attach = function(tree_buffer)
-          local api = require "nvim-tree.api"
+          local api = require("nvim-tree.api")
           local actions = require("pickers.nvim-tree").actions
           local inject = require("nvim-tree.utils").inject_node
 
@@ -851,7 +844,7 @@ lazy.setup {
   --     -- "kyazdani42/nvim-web-devicons"
   --   },
   --   config = function()
-  --     local colors = require "ui.colors"
+  --     local colors = require("ui.colors")
 
   --     require("barbecue").setup {
   --       symbols = {
@@ -929,13 +922,13 @@ lazy.setup {
     event = event,
     lazy = true,
     config = function()
-      local icons = require "ui.icons"
+      local icons = require("ui.icons")
       local status = icons.status
 
       require("lualine").setup {
         options = {
           icons_enabled = true,
-          -- theme = require "hls.lualine",
+          -- theme = require("hls.lualine"),
           component_separators = {left = " ", right = " "},
           section_separators = {left = "", right = ""},
           disabled_filetypes = {
@@ -1026,7 +1019,7 @@ lazy.setup {
     cmd = {"ToggleTerm"},
     config = function()
       require("toggleterm").setup {
-        highlights = require "hls.toggleterm",
+        highlights = require("hls.toggleterm"),
         size = 20,
         shading_factor = 2,
         start_in_insert = true,
@@ -1107,7 +1100,7 @@ lazy.setup {
         }
       end
 
-      local cmp_window = require "cmp.utils.window"
+      local cmp_window = require("cmp.utils.window")
 
       cmp_window.info_ = cmp_window.info
       cmp_window.info = function(self)
@@ -1612,60 +1605,6 @@ lazy.setup {
       harpoon:setup()
     end
   },
-  -- {
-  --   "shadowofseaice/yabs.nvim",
-  --   dependencies = {
-  --     "kyazdani42/nvim-web-devicons"
-  --   },
-  --   config = function()
-  --     require("yabs").setup {
-  --       position = {"C"},
-  --       rnu = true, -- show relative line number, comes handy to quickly jump around buffers with usual #j or #k keys
-  --       border = "rounded", -- none, single, double, rounded, solid, shadow, (or an array or chars). Default shadow
-  --       offset = {
-  --         -- window position offset
-  --         top = 2, -- default 0
-  --         bottom = 2, -- default 0
-  --         left = 2, -- default 0
-  --         right = 2 -- default 0
-  --       },
-  --       settings = {
-  --         {"name", "icon", "bufnr"},
-  --         {"icon", "bufnr", "bufname", "lnum", "line"},
-  --         {"path", "name", "bufid"}
-  --       },
-  --       keymap = {
-  --         close = "<D-d>", -- Close buffer. Default D
-  --         jump = "<CR>", -- Jump to buffer. Default <cr>
-  --         h_split = "h", -- Horizontally split buffer. Default s
-  --         v_split = "v", -- Vertically split buffer. Default v
-  --         pinning = "p", -- Open buffer preview. Default p
-  --         cycset = "]", -- Cycle through settings, Default ]
-  --         rcycset = "[", -- Reverse cycle through settings, Default [
-  --         cycpos = ".", -- Cycle through settings, Default >
-  --         rcycpos = ",", -- Reverse cycle through panel placement, Default <
-  --         cycname = "}", -- Cycle through file name type, Default }
-  --         rcycname = "{", -- Reverse cycle through file name type, Default {
-  --         cychdr = "H", -- Cycle through group header options, Default H
-  --         sortpath = "P", -- Sort by file path. Default P
-  --         sortext = "e", -- Sort by file extension (type), Default t
-  --         sortused = "l", -- Sort by last used, Default u
-  --         sortbuf = "c", -- Sort clear = sort by buffer #, default c
-  --         sortbase = "b", -- Sort by file base name #, default f
-  --         sortfull = "f", -- Sort by full file name #, default F
-  --         sortinit = "i" -- Sort by file name initial #, default i
-  --       },
-  --       highlight = {
-  --         current = "Title", -- default WarningMsg
-  --         edited = "Comment", -- default ModeMsg
-  --         split = "Comment", -- default Normal
-  --         alter = "Comment", -- default Normal
-  --         grphead = "Comment", -- default Fold
-  --         unloaded = "Comment" -- default Comment
-  --       }
-  --     }
-  --   end
-  -- },
   {
     "HampusHauffman/block.nvim",
     config = function()
@@ -1878,7 +1817,7 @@ lazy.setup {
           require("ui.signature").setup(client)
         end
 
-        -- require "lsp_signature".on_attach(
+        -- require("lsp_signature").on_attach(
         --   {
         --     bind = true,
         --     max_height = 5,
@@ -1959,7 +1898,7 @@ lazy.setup {
       lspconfig.rescriptls.setup {
         cmd = {
           "/usr/local/bin/node",
-          "/Users/mobily/.local/share/nvim/mason/packages/rescript-lsp/extension/server/out/server.js",
+          vim.fn.expand("$HOME") .. "/.local/share/nvim/mason/packages/rescript-lsp/extension/server/out/server.js",
           "--stdio"
         },
         on_attach = on_attach,
@@ -2060,7 +1999,7 @@ lazy.setup {
     config = function()
       require("scissors").setup(
         {
-          snippetDir = "/Users/mobily/.config/nvim/lua/snippets"
+          snippetDir = vim.fn.expand("$HOME") .. "/.config/nvim/lua/snippets"
         }
       )
     end

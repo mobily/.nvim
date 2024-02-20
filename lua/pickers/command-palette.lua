@@ -1,8 +1,8 @@
 local M = {}
 
-local fn = require "utils.fn"
-local telescope_ui = require "ui.telescope"
-local harpoon = require "harpoon"
+local fn = require("utils.fn")
+local telescope_ui = require("ui.telescope")
+local harpoon = require("harpoon")
 
 local actions = {
   {
@@ -33,7 +33,7 @@ local actions = {
     space = "harpoon",
     name = "display all marks",
     command = function()
-      local menu = require "pickers.harpoon"
+      local menu = require("pickers.harpoon")
       menu.toggle(harpoon:list())
     end,
     keymap = "ll"

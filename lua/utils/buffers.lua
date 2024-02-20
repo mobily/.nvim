@@ -1,6 +1,6 @@
 local M = {}
 
-local fn = require "utils.fn"
+local fn = require("utils.fn")
 
 M.prev_buffer = function()
   vim.cmd("BufferLineCyclePrev")

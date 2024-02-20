@@ -1,7 +1,4 @@
-local ui = require "ui"
-local theme = ui.theme
-
-local colors = require "ui.colors"
+local colors = require("ui.colors")
 
 return {
   -- true/false

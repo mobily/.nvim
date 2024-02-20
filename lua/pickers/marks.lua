@@ -1,12 +1,12 @@
 local M = {}
 
-local utils = require "utils"
-local fn = require "utils.fn"
-local previewers = require "telescope.previewers"
+local utils = require("utils")
+local fn = require("utils.fn")
+local previewers = require("telescope.previewers")
 
 local make_picker = function(results, opts)
-  local finders = require "telescope.finders"
-  local make_entry = require "telescope.make_entry"
+  local finders = require("telescope.finders")
+  local make_entry = require("telescope.make_entry")
   local config = require("telescope.config").values
 
   opts = opts or {}
@@ -218,8 +218,8 @@ local toggle_bookmark = function(bookmark)
 end
 
 local delete_buffer_bookmarks = function()
-  local marks = require "marks"
-  local utils = require "marks.utils"
+  local marks = require("marks")
+  local utils = require("marks.utils")
   local groups = marks.bookmark_state.groups
 
   local current_bufnr = vim.api.nvim_get_current_buf()

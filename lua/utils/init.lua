@@ -77,7 +77,7 @@ M.preserve_cursor_position = function(fn)
 end
 
 M.normalize_path = function(path)
-  local Path = require "plenary.path"
+  local Path = require("plenary.path")
   local cwd = vim.fn.getcwd()
   return Path:new(path):normalize(cwd)
 end

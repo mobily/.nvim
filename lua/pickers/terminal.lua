@@ -1,9 +1,9 @@
 local M = {}
 
-local fn = require "utils.fn"
+local fn = require("utils.fn")
 local Terminal = require("toggleterm.terminal").Terminal
 
-local utils = require "utils"
+local utils = require("utils")
 local map = utils.keymap_factory("n")
 local cmd = utils.cmd
 

@@ -1,8 +1,8 @@
 local M = {}
 
-local strings = require "plenary.strings"
-local fn = require "utils.fn"
-local utils = require "utils"
+local strings = require("plenary.strings")
+local fn = require("utils.fn")
+local utils = require("utils")
 
 local mappings = {
   ["<"] = "",
@@ -90,7 +90,7 @@ M.make = function(picker)
             }
           )
 
-          local entry_display = require "telescope.pickers.entry_display"
+          local entry_display = require("telescope.pickers.entry_display")
           local displayer =
             entry_display.create(
             {
@@ -144,8 +144,8 @@ M.make = function(picker)
             finder = finder,
             sorter = sorter,
             attach_mappings = function(prompt_buffer_number, map)
-              local telescope_actions = require "telescope.actions"
-              local telescope_state = require "telescope.actions.state"
+              local telescope_actions = require("telescope.actions")
+              local telescope_state = require("telescope.actions.state")
 
               for _, action in pairs(actions) do
                 if action.keymap then

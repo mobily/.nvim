@@ -1,4 +1,4 @@
-local utils = require "utils"
+local utils = require("utils")
 
 local map = utils.keymap_factory("t")
 local termcodes = utils.termcodes

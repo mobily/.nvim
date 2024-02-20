@@ -53,7 +53,7 @@ vim.opt.updatetime = 250
 vim.opt.whichwrap:append "<>[]hl"
 
 vim.g.mapleader = "\\"
-vim.g.luasnippets_path = "/Users/mobily/.config/nvim/lua/snippets"
+vim.g.luasnippets_path = vim.fn.expand("$HOME") .. "/.config/nvim/lua/snippets"
 -- vim.g.editorconfig = false
 
 if vim.g.neovide then
