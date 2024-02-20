@@ -1,15 +1,3 @@
--- captures the entire buffer
--- lines containing 'done' items: ×
--- vim.cmd.syntax([[match JournalDone /^×.*/]])
--- -- lines containing 'todo' items: ·
--- vim.cmd.syntax([[match JournalTodo /^·.*/]])
--- -- lines containing 'event' items: o
--- vim.cmd.syntax([[match JournalEvent /^o.*/]])
--- -- lines containing 'note' items: -
--- vim.cmd.syntax([[match JournalNote /^- .*/]])
--- -- lines containing 'moved' items: >
--- vim.cmd.syntax([[match JournalMoved /^>.*/]])
-
 local group_id = vim.api.nvim_create_augroup("custom_highlighting", {clear = true})
 
 vim.api.nvim_create_autocmd(
