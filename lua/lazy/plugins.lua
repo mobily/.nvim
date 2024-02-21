@@ -652,7 +652,15 @@ lazy.setup {
           insert_only = true,
           win_options = {
             winblend = 0
-          }
+          },
+          title_pos = "center",
+          get_config = function(config)
+            if config.opts.kind == "timetracker" then
+              return {
+                relative = "editor"
+              }
+            end
+          end
         },
         select = {
           enabled = true,
@@ -965,7 +973,8 @@ lazy.setup {
               path = 1
             },
             "progress",
-            "filetype"
+            "filetype",
+            require("plugins.timetracker").status
           },
           lualine_x = {},
           lualine_y = {"encoding"},
