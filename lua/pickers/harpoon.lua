@@ -2,7 +2,7 @@ local harpoon = require("harpoon")
 local conf = require("telescope.config").values
 local M = {}
 
-M.toggle_telescope = function(harpoon_files)
+M.toggle = function(harpoon_files)
   local file_paths = {}
   for _, item in ipairs(harpoon_files.items) do
     table.insert(file_paths, item.value)
