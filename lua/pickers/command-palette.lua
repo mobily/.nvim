@@ -41,74 +41,62 @@ local actions = {
   {
     space = "journal",
     name = "add new entry",
-    command = "JournalEntry",
-    keymap = "je"
+    command = "JournalEntry"
   },
   {
     space = "ollama",
     name = "chit-chat",
-    command = "Chat",
-    keymap = "oc"
+    command = "Chat"
   },
   {
     space = "ollama",
     name = "ask about the selected text",
-    command = "X_Ask",
-    keymap = "oa"
+    command = "X_Ask"
   },
   {
     space = "ollama",
     name = "generate a detailed description",
-    command = "X_Generate_Description",
-    keymap = "od"
+    command = "X_Generate_Description"
   },
   {
     space = "ollama",
     name = "generate a simple and concise description",
-    command = "X_Generate_Simple_Description",
-    keymap = "osd"
+    command = "X_Generate_Simple_Description"
   },
   {
     space = "ollama",
     name = "suggest better naming",
-    command = "X_Suggest_Better_Naming",
-    keymap = "on"
+    command = "X_Suggest_Better_Naming"
   },
   {
     space = "ollama",
     name = "make concise",
-    command = "X_Make_Concise",
-    keymap = "omc"
+    command = "X_Make_Concise"
   },
   {
     space = "ollama",
     name = "enhance grammar spelling",
-    command = "X_Enhance_Grammar_Spelling",
-    keymap = "oes"
+    command = "X_Enhance_Grammar_Spelling"
   },
   {
     space = "ollama",
     name = "enhance wording",
-    command = "X_Enhance_Wording",
-    keymap = "oew"
+    command = "X_Enhance_Wording"
   },
   {
     space = "ollama",
     name = "enhance code",
-    command = "X_Enhance_Code",
-    keymap = "oec"
+    command = "X_Enhance_Code"
   },
   {
     space = "ollama",
     name = "simplify code",
-    command = "X_Simplify_Code",
-    keymap = "osc"
+    command = "X_Simplify_Code"
   },
   {
     space = "ollama",
     name = "review code",
-    command = "X_Review_Code",
-    keymap = "ocr"
+    command = "X_Review_Code"
   },
   {
     space = "spectre",
@@ -116,7 +104,7 @@ local actions = {
     command = function()
       require("spectre").toggle()
     end,
-    keymap = "fr"
+    keymap = "<D-F>"
   },
   {
     space = "trouble",
@@ -127,14 +115,12 @@ local actions = {
   {
     space = "scissors",
     name = "add new snippet",
-    command = "ScissorsAddNewSnippet",
-    keymap = "scn"
+    command = "ScissorsAddNewSnippet"
   },
   {
     space = "scissors",
     name = "edit snippet",
-    command = "ScissorsEditSnippet",
-    keymap = "sce"
+    command = "ScissorsEditSnippet"
   },
   {
     space = "telescope",
@@ -288,7 +274,6 @@ local actions = {
   },
   {
     space = "buffers",
-    keymap = "bp",
     name = "toggle pin",
     command = "BufferLineTogglePin"
   },
