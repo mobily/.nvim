@@ -40,9 +40,9 @@ local actions = {
     keymap = "r"
   },
   {
-    name = "start (backdate)",
+    name = "start (custom input)",
     command = make_input(
-      "Enter backdate",
+      "Enter backdate & tag",
       function(value)
         cmd("Start", value)
       end
@@ -65,7 +65,7 @@ local actions = {
   {
     name = "resume",
     command = make_input(
-      "Enter entry @id",
+      "Enter @id",
       function(value)
         cmd("Continue", value)
       end
@@ -74,7 +74,7 @@ local actions = {
   {
     name = "add entry",
     command = make_input(
-      "Enter custom range",
+      "Enter custom range & tag",
       function(value)
         cmd("Track", value)
       end
@@ -83,7 +83,7 @@ local actions = {
   {
     name = "delete entry",
     command = make_input(
-      "Enter entry @id",
+      "Enter @id",
       function(value)
         cmd("Delete", value)
       end
@@ -93,7 +93,7 @@ local actions = {
     name = "add description",
     keymap = "a",
     command = make_input(
-      "Enter entry description",
+      "Enter description & @id",
       function(value)
         cmd("Annotate", value)
       end
@@ -103,7 +103,7 @@ local actions = {
     name = "set tag",
     keymap = "t",
     command = make_input(
-      "Enter entry tag",
+      "Enter tag & @id",
       function(value)
         cmd("Tag", value)
       end
@@ -159,8 +159,8 @@ local actions = {
     )
   },
   {
-    name = "refresh last view",
-    command = "Refresh"
+    name = "reload last view",
+    command = "Reload"
   },
   {
     name = "close",

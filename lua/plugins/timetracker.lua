@@ -82,7 +82,7 @@ function TimeTracker:close()
   end
 end
 
-function TimeTracker:refresh()
+function TimeTracker:reload()
   if self.last_command ~= nil then
     return self:open(self.last_command, self.last_args)
   end
@@ -291,9 +291,9 @@ vim.api.nvim_create_user_command(
 )
 
 vim.api.nvim_create_user_command(
-  "TimeTrackerRefresh",
+  "TimeTrackerReload",
   function(opts)
-    timetracker:refresh()
+    timetracker:reload()
   end,
   {}
 )
