@@ -13,6 +13,9 @@ return {
   JournalNote = {
     fg = colors.blue["200"]
   },
+  JournalPaused = {
+    fg = colors.dark["200"]
+  },
   JournalMoved = {
     fg = colors.dark["200"]
   },

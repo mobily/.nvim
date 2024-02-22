@@ -1460,7 +1460,8 @@ lazy.setup {
               "🞪",
               "🞶",
               "⏺",
-              "⏸"
+              "⏸",
+              "🞂"
             },
             word = false,
             cyclic = true
