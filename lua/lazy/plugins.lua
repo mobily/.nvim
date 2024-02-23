@@ -974,7 +974,17 @@ lazy.setup {
             },
             "progress",
             "filetype",
-            require("plugins.timetracker").status
+            require("plugins.timetracker").status,
+            function()
+              local hs = require("plugins.hammerspoon")
+
+              if hs.state.current_song then
+                local is_playing = hs.state.is_playing and "🞂" or "⏸"
+                return is_playing .. " " .. hs.state.current_song
+              end
+
+              return ""
+            end
           },
           lualine_x = {},
           lualine_y = {"encoding"},
