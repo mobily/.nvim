@@ -63,6 +63,7 @@ if vim.g.neovide then
   vim.g.neovide_input_macos_alt_is_meta = 1
   vim.g.neovide_cursor_animation_length = 0.05
   vim.g.neovide_cursor_vfx_mode = "pixiedust"
+  vim.g.neovide_floating_shadow = false
 end
 
 -- disable some builtin vim plugins
