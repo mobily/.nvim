@@ -74,6 +74,49 @@ function TimeTracker:exec(cmd, args)
 
   self:__set_start_time()
   self:notify(result)
+
+  return result
+end
+
+function TimeTracker:export(args)
+  local command = self:__build_command("export", args)
+  local result = vim.fn.system(command)
+
+  return vim.fn.json_decode(result)
+end
+
+function TimeTracker:track(args)
+  local result = self:exec("track", args)
+  return not (string.find(result, "cannot overlap") ~= nil)
+end
+
+function TimeTracker:start(args)
+  local result = self:exec("start", args)
+  return not (string.find(result, "cannot overlap") ~= nil)
+end
+
+function TimeTracker:stop(args)
+  return self:exec("stop", args)
+end
+
+function TimeTracker:delete(args)
+  return self:exec("delete", args)
+end
+
+function TimeTracker:continue(args)
+  return self:exec("continue", args)
+end
+
+function TimeTracker:annotate(args)
+  return self:exec("annotate", args)
+end
+
+function TimeTracker:tag(args)
+  return self:exec("tag", args)
+end
+
+function TimeTracker:cancel()
+  return self:exec("cancel")
 end
 
 function TimeTracker:close()
@@ -169,26 +212,11 @@ function TimeTracker:__set_options()
 end
 
 local timetracker = TimeTracker:new()
-local normalize_args = function(args)
-  if #args > 0 then
-    local last_arg = table.remove(args, #args)
-    local is_id = string.find(last_arg, "^@")
-    local string = table.concat(args, " ")
-
-    if is_id then
-      return '"' .. string .. '"' .. " " .. last_arg
-    end
-
-    return '"' .. string .. " " .. last_arg .. '"'
-  end
-
-  return ""
-end
 
 vim.api.nvim_create_user_command(
   "TimeTrackerStart",
   function(opts)
-    timetracker:exec("start", opts.args)
+    timetracker:start(opts.args)
   end,
   {nargs = "?"}
 )
@@ -196,24 +224,24 @@ vim.api.nvim_create_user_command(
 vim.api.nvim_create_user_command(
   "TimeTrackerAnnotate",
   function(opts)
-    timetracker:exec("annotate", normalize_args(opts.fargs))
+    timetracker:annotate(opts.args)
   end,
-  {nargs = "*"}
+  {nargs = "?"}
 )
 
 vim.api.nvim_create_user_command(
   "TimeTrackerTag",
   function(opts)
     print()
-    timetracker:exec("tag", normalize_args(opts.fargs))
+    timetracker:tag(opts.args)
   end,
-  {nargs = "*"}
+  {nargs = "?"}
 )
 
 vim.api.nvim_create_user_command(
   "TimeTrackerStop",
   function(opts)
-    timetracker:exec("stop", opts.args)
+    timetracker:stop(opts.args)
   end,
   {nargs = "?"}
 )
@@ -221,7 +249,7 @@ vim.api.nvim_create_user_command(
 vim.api.nvim_create_user_command(
   "TimeTrackerTrack",
   function(opts)
-    timetracker:exec("track", opts.args)
+    timetracker:track(opts.args)
   end,
   {nargs = "?"}
 )
@@ -229,7 +257,7 @@ vim.api.nvim_create_user_command(
 vim.api.nvim_create_user_command(
   "TimeTrackerDelete",
   function(opts)
-    timetracker:exec("delete", opts.args)
+    timetracker:delete(opts.args)
   end,
   {nargs = "?"}
 )
@@ -237,7 +265,7 @@ vim.api.nvim_create_user_command(
 vim.api.nvim_create_user_command(
   "TimeTrackerContinue",
   function(opts)
-    timetracker:exec("continue", opts.args)
+    timetracker:continue(opts.args)
   end,
   {nargs = "?"}
 )
@@ -245,7 +273,7 @@ vim.api.nvim_create_user_command(
 vim.api.nvim_create_user_command(
   "TimeTrackerCancel",
   function(opts)
-    timetracker:exec("cancel")
+    timetracker:cancel()
   end,
   {}
 )

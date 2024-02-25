@@ -39,7 +39,7 @@ return {
     link = "NvimTreeFolderName"
   },
   NvimTreeGitDeleted = {
-    fg = colors.red["300"]
+    fg = colors.red["200"]
   },
   NvimTreeGitIgnored = {
     link = "NvimTreeFolderIcon"
