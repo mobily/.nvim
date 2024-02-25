@@ -2046,5 +2046,8 @@ lazy.setup {
     "0xAdk/full_visual_line.nvim",
     keys = "V",
     opts = {}
+  },
+  {
+    "MunifTanjim/nui.nvim"
   }
 }
