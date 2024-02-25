@@ -126,4 +126,11 @@ M.common_keymaps = {
   "f"
 }
 
+M.mapping_to_macos = function(keymap)
+  return keymap:gsub("CR", "↩"):gsub("<", ""):gsub(">", ""):gsub("-", " "):gsub("D", "⌘"):gsub("A", "⌥"):gsub("C", "⌃"):gsub(
+    "BS",
+    "⌫"
+  ):gsub("leader", vim.g.mapleader .. " ")
+end
+
 return M

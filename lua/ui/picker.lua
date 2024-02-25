@@ -4,18 +4,6 @@ local strings = require("plenary.strings")
 local fn = require("utils.fn")
 local utils = require("utils")
 
-local mappings = {
-  ["<"] = "",
-  [">"] = "",
-  ["D"] = "⌘",
-  ["A"] = "⌥",
-  ["C"] = "⌃",
-  ["-"] = " ",
-  ["BS"] = "⌫",
-  ["CR"] = "↩",
-  ["leader"] = vim.g.mapleader .. " "
-}
-
 local ignore = function(fn)
   fn()
 end
@@ -51,14 +39,7 @@ M.make = function(picker)
                 local keymap = action.keymap
 
                 if keymap then
-                  keymap =
-                    fn.kreduce(
-                    mappings,
-                    function(acc, value, index)
-                      return string.gsub(acc, index, value)
-                    end,
-                    keymap
-                  )
+                  keymap = utils.mapping_to_macos(keymap)
                 end
 
                 return {
