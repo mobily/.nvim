@@ -1049,7 +1049,10 @@ lazy.setup {
         float_opts = {
           border = "double",
           winblend = 1
-        }
+        },
+        on_open = function(term)
+          vim.api.nvim_buf_set_keymap(term.bufnr, "n", "q", "<Nop>", {silent = true, noremap = true})
+        end
       }
     end
   },
