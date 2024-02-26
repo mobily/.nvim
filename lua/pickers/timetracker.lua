@@ -56,7 +56,7 @@ local join = function(...)
 end
 
 local validator = Form.validator
-local form_footer = Form.footer({is_focusable = false})
+local form_footer = Form.footer()
 local form_tags =
   Form.select(
   {
@@ -255,10 +255,6 @@ local actions = {
         Form:new(
         {
           on_submit = function(state)
-            if state.id == "" or #state.tags == 0 then
-              return
-            end
-
             local tags = join(normalize_tags(state.tags), state.id)
             timetracker:tag(tags)
           end

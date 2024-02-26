@@ -119,6 +119,12 @@ M.imap = function(tbl, func)
   )
 end
 
+M.ieach = function(tbl, func)
+  for index, element in ipairs(tbl) do
+    func(element, index)
+  end
+end
+
 -- Returns an array of a given table's string-keyed property names.
 M.keys = function(tbl)
   local keys = {}

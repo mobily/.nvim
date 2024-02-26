@@ -9,21 +9,37 @@ end
 M.ignore = function()
 end
 
-M.set_default_height = function(options)
-  return vim.tbl_extend("force", {height = 3}, vim.F.if_nil(options, {}))
+M.always = function(value)
+  return function()
+    return value
+  end
 end
 
-M.attach_prev_next_focus = function(element)
-  local bufnr = element.bufnr
-  local form = element.instance.form
-  local index = element.instance.options.index
+M.set_default_options = function(options)
+  return vim.tbl_extend(
+    "force",
+    {
+      height = 3,
+      is_focusable = true,
+      validate = M.always(true),
+      hidden = M.always(false)
+    },
+    vim.F.if_nil(options, {})
+  )
+end
+
+M.attach_prev_next_focus = function(component)
+  local bufnr = component.bufnr
+  local form = component:get_form()
+  local options = component:get_options()
 
   M.keymap(
     bufnr,
     {"i", "n"},
     "<Tab>",
     function()
-      local next = form.focusable_elements[index + 1] or form.focusable_elements[1]
+      local index = options.focus_index
+      local next = form.focusable_components[index + 1] or form.focusable_components[1]
       vim.api.nvim_set_current_win(next.winid)
     end
   )
@@ -33,21 +49,22 @@ M.attach_prev_next_focus = function(element)
     {"i", "n"},
     "<S-Tab>",
     function()
-      local prev = form.focusable_elements[index - 1] or form.focusable_elements[#form.focusable_elements]
+      local index = options.focus_index
+      local prev = form.focusable_components[index - 1] or form.focusable_components[#form.focusable_components]
       vim.api.nvim_set_current_win(prev.winid)
     end
   )
 end
 
-M.set_initial_focus = function(element)
-  if element.instance.options.focus then
-    vim.api.nvim_set_current_win(element.winid)
+M.set_initial_focus = function(component)
+  if component:get_options().focus then
+    vim.api.nvim_set_current_win(component.winid)
   end
 end
 
-M.attach_form_events = function(element)
-  local bufnr = element.bufnr
-  local form = element.instance.form
+M.attach_form_events = function(component)
+  local bufnr = component.bufnr
+  local form = component:get_form()
 
   vim.api.nvim_create_autocmd(
     "WinClosed",

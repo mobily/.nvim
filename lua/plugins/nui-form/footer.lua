@@ -1,39 +1,24 @@
-local Popup = require("nui.popup")
+local Component = require("plugins.nui-form.component")
+
 local Line = require("nui.line")
 local Text = require("nui.text")
 
 local utils = require("plugins.nui-form.utils")
 local to_macos_keys = require("utils").to_macos_keys
 
-local Footer = Popup:extend("Footer")
+local Footer = Component:extend("Footer")
 
 function Footer:init(options, form)
-  local popup_options = {
-    enter = false,
-    focusable = true,
-    size = {
-      width = form.width
-    },
-    win_options = {
-      winblend = 0
-    }
-  }
-
-  self.instance = {
-    form = form,
-    options = options
-  }
-
-  Footer.super.init(self, popup_options)
-
-  utils.attach_prev_next_focus(self)
+  Footer.super.init(self, form, vim.tbl_extend("force", options, {is_focusable = false}))
 end
 
 function Footer:mount()
   Footer.super.mount(self)
 
-  local form = self.instance.form
+  local form = self:get_form()
+
   local line = Line()
+
   local submit_key = to_macos_keys(form.keymap.submit)
   local close_key = to_macos_keys(form.keymap.close)
 
@@ -45,8 +30,6 @@ function Footer:mount()
 
   local pad_left = line:render(self.bufnr, -1, 1)
   vim.api.nvim_set_option_value("modifiable", false, {buf = self.bufnr})
-
-  utils.set_initial_focus(self)
 end
 
 function Footer:get_state()

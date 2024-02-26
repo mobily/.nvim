@@ -18,14 +18,7 @@ function NuiForm:new(options)
 
   options.default_options = {
     label_align = vim.F.if_nil(options.label_align, "left"),
-    style = vim.F.if_nil(options.style, "rounded"),
-    is_focusable = true,
-    validate = vim.F.if_nil(
-      options.validate,
-      function()
-        return true
-      end
-    )
+    style = vim.F.if_nil(options.style, "rounded")
   }
 
   options.keymap =
@@ -43,7 +36,7 @@ function NuiForm:new(options)
   options.on_submit = vim.F.if_nil(options.on_submit, utils.ignore)
   options.on_close = vim.F.if_nil(options.on_close, utils.ignore)
 
-  self.focusable_elements = {}
+  self.focusable_components = {}
   self.state = {}
 
   return setmetatable(options, self)
@@ -52,36 +45,96 @@ end
 function NuiForm.text_input(options)
   return {
     type = "text_input",
-    options = utils.set_default_height(options)
+    options = utils.set_default_options(options)
   }
 end
 
 function NuiForm.select(options)
   return {
     type = "select",
-    options = utils.set_default_height(options)
+    options = utils.set_default_options(options)
   }
 end
 
 function NuiForm.footer(options)
   return {
     type = "footer",
-    options = utils.set_default_height(options)
+    options = utils.set_default_options(options)
   }
 end
 
 NuiForm.validator = validators
 
 function NuiForm:set_content(...)
-  self.content = {...}
+  self:__make_components({...})
 end
 
 function NuiForm:open()
-  self.focusable_elements = {}
-  self.all_elements = {}
+  self:__make_focusable_components()
+  self:__make_layout()
 
-  local total_height = self:__get_total_height(self.content)
-  local elements = self:__get_layout(self.content)
+  vim.schedule(
+    function()
+      self.layout:mount()
+    end
+  )
+end
+
+function NuiForm:set_state(key, value)
+  self.state[key] = value
+
+  if not self.layout then
+    return
+  end
+
+  if self.layout._.mounted then
+    fn.ieach(
+      self.components,
+      function(component)
+        vim.schedule(
+          function()
+            -- how to hide a window temporarily?
+            component:on_state_change()
+          end
+        )
+      end
+    )
+  end
+end
+
+function NuiForm:validate()
+  for index, component in ipairs(self.components) do
+    if not component:is_hidden() and not component:validate() then
+      return false
+    end
+  end
+
+  return true
+end
+
+function NuiForm:__make_layout()
+  local total_height =
+    fn.ireduce(
+    self.components,
+    function(acc, component)
+      return acc + component:get_height()
+    end,
+    0
+  )
+
+  local components =
+    fn.ireduce(
+    self.components,
+    function(acc, component)
+      if not component:is_hidden() then
+        local size = math.ceil(component:get_height() / total_height * 100) .. "%"
+        table.insert(acc, Layout.Box(component, {size = size}))
+      end
+
+      return acc
+    end,
+    {}
+  )
 
   self.layout =
     Layout(
@@ -93,57 +146,36 @@ function NuiForm:open()
         height = total_height
       }
     },
-    Layout.Box(elements, {dir = "col"})
+    Layout.Box(components, {dir = "col"})
+  )
+end
+
+function NuiForm:__make_focusable_components()
+  self.focusable_components =
+    fn.ifilter(
+    self.components,
+    function(component)
+      return component:is_focusable() and not component:is_hidden()
+    end
   )
 
-  vim.schedule(
-    function()
-      self.layout:mount()
+  fn.ieach(
+    self.focusable_components,
+    function(component, index)
+      component:set_focus_index(index)
     end
   )
 end
 
-function NuiForm:__set_default_height(options)
-  return vim.tbl_extend("force", {height = 3}, vim.F.if_nil(options, {}))
-end
-
-function NuiForm:set_state(key, value)
-  self.state[key] = value
-end
-
-function NuiForm:validate()
-  for index, element in ipairs(self.all_elements) do
-    if not element:validate() then
-      return false
-    end
-  end
-
-  return true
-end
-
-function NuiForm:__get_total_height(elements)
-  return fn.ireduce(
-    elements,
-    function(acc, item)
-      return acc + item.options.height
-    end,
-    0
-  )
-end
-
-function NuiForm:__get_layout(elements)
-  local total_height = self:__get_total_height(elements)
-
-  local layout =
+function NuiForm:__make_components(content)
+  self.components =
     fn.ireduce(
-    elements,
+    content,
     function(acc, item, index)
       local options = vim.tbl_deep_extend("force", self.default_options, item.options)
-      local size = math.ceil(options.height / total_height * 100) .. "%"
+      -- local size = math.ceil(options.height / total_height * 100) .. "%"
 
-      options.index = index
-
-      local element =
+      local component =
         fn.switch(
         item.type,
         {
@@ -159,22 +191,14 @@ function NuiForm:__get_layout(elements)
         }
       )
 
-      if element then
-        if element.instance.options.is_focusable then
-          table.insert(self.focusable_elements, element)
-        end
-
-        table.insert(self.all_elements, element)
-
-        table.insert(acc, Layout.Box(element, {size = size}))
+      if component then
+        table.insert(acc, component)
       end
 
       return acc
     end,
     {}
   )
-
-  return layout
 end
 
 vim.api.nvim_create_user_command(
@@ -222,7 +246,7 @@ vim.api.nvim_create_user_command(
           }
         }
       ),
-      form.footer({is_focusable = false})
+      form.footer()
     )
 
     form:open()
