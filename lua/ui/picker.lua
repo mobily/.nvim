@@ -39,7 +39,7 @@ M.make = function(picker)
                 local keymap = action.keymap
 
                 if keymap then
-                  keymap = utils.mapping_to_macos(keymap)
+                  keymap = utils.to_macos_keys(keymap)
                 end
 
                 return {

@@ -126,7 +126,7 @@ M.common_keymaps = {
   "f"
 }
 
-M.mapping_to_macos = function(keymap)
+M.to_macos_keys = function(keymap)
   return keymap:gsub("CR", "↩"):gsub("<", ""):gsub(">", ""):gsub("-", " "):gsub("D", "⌘"):gsub("A", "⌥"):gsub("C", "⌃"):gsub(
     "BS",
     "⌫"
