@@ -1,7 +1,7 @@
 local M = {}
 
 M.required = function(value)
-  return not value ~= nil
+  return not (value ~= nil)
 end
 
 M.min_length = function(min)
