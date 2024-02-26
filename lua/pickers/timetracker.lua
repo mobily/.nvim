@@ -55,6 +55,7 @@ local join = function(...)
   return table.concat({...}, " ")
 end
 
+local validator = Form.validator
 local form_footer = Form.footer({is_focusable = false})
 local form_tags =
   Form.select(
@@ -63,6 +64,7 @@ local form_tags =
     key = "tags",
     label = " 󰓹 Tag ",
     multiselect = true,
+    validate = validator.is_not_empty,
     data = {
       "Work",
       "Meetings",
@@ -88,7 +90,8 @@ local form_range =
   {
     key = "range",
     label = " 󰃮 Range ",
-    focus = true
+    focus = true,
+    validate = validator.is_not_empty
   }
 )
 local form_backdate =
@@ -96,7 +99,8 @@ local form_backdate =
   {
     key = "backdate",
     label = " 󰃮 Backdate ",
-    focus = true
+    focus = true,
+    validate = validator.is_not_empty
   }
 )
 local form_id =
@@ -104,7 +108,8 @@ local form_id =
   {
     key = "id",
     label = " 󰛄 @id ",
-    focus = true
+    focus = true,
+    validate = validator.compose(validator.is_not_empty, validator.contains("@"))
   }
 )
 
@@ -121,10 +126,6 @@ local actions = {
         Form:new(
         {
           on_submit = function(state)
-            if state.backdate == "" then
-              return
-            end
-
             local is_success = timetracker:start(state.backdate)
 
             if not is_success then
@@ -167,10 +168,6 @@ local actions = {
         Form:new(
         {
           on_submit = function(state)
-            if state.id == "" then
-              return
-            end
-
             timetracker:continue(state.id)
           end
         }
@@ -187,10 +184,6 @@ local actions = {
         Form:new(
         {
           on_submit = function(state)
-            if state.backdate == "" then
-              return
-            end
-
             local is_success = timetracker:track(state.backdate)
 
             if not is_success then
@@ -227,10 +220,6 @@ local actions = {
         Form:new(
         {
           on_submit = function(state)
-            if state.id == "" then
-              return
-            end
-
             timetracker:delete(state.id)
           end
         }
@@ -248,10 +237,6 @@ local actions = {
         Form:new(
         {
           on_submit = function(state)
-            if state.id == "" then
-              return
-            end
-
             local value = join(escape(state.description), state.id)
             timetracker:annotate(value)
           end
@@ -318,10 +303,6 @@ local actions = {
         Form:new(
         {
           on_submit = function(state)
-            if #state.type == 0 then
-              return
-            end
-
             local value = join(state.type[1].id, state.range)
             timetracker:open(value)
           end
@@ -339,7 +320,8 @@ local actions = {
               {text = "Day", id = "day"},
               {text = "Week", id = "week"},
               {text = "Month", id = "month"}
-            }
+            },
+            validate = validator.is_not_empty
           }
         ),
         form_footer
@@ -358,10 +340,6 @@ local actions = {
         Form:new(
         {
           on_submit = function(state)
-            if state.range == "" then
-              return
-            end
-
             timetracker:open(join("summary", state.range))
           end
         }
