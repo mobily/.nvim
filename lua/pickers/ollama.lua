@@ -73,11 +73,16 @@ M.toggle = function()
         focus = true,
         key = "type",
         label = "Hey, Ollama, I'd like to…",
+        shrink_on_blur = true,
         data = {
           {text = "chit-chat", id = "chat"},
           {
-            text = "ask regarding the following text",
+            text = "ask regarding the following text/code",
             id = "ask"
+          },
+          {
+            type = "separator",
+            text = "󰦨 text "
           },
           {
             text = "modify the following text to improve grammar and spelling",
@@ -90,6 +95,10 @@ M.toggle = function()
           {
             text = "modify the following text to make it as simple and concise as possible",
             id = "make-concise"
+          },
+          {
+            type = "separator",
+            text = "󰅪 code "
           },
           {
             text = "generate a simple and concise description of the following code",
