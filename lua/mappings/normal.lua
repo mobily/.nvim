@@ -293,11 +293,21 @@ map_with_visual(
 )
 
 map(
-  "<D-->",
+  "<PageUp>",
   function()
     if is_default_buffer() then
       local menu = require("pickers.timetracker")
       require("ui.picker").make(menu)
+    end
+  end
+)
+
+map(
+  "<PageDown>",
+  function()
+    if is_default_buffer() then
+      local menu = require("pickers.ollama")
+      menu.toggle()
     end
   end
 )
