@@ -3,9 +3,8 @@ local Component = require("plugins.nui-form.component")
 local Line = require("nui.line")
 local Tree = require("nui.tree")
 
-local event = require("nui.utils.autocmd").event
-local utils = require("plugins.nui-form.utils")
 local fn = require("utils.fn")
+local event = require("nui.utils.autocmd").event
 local is_type = require("nui.utils").is_type
 
 local Select = Component:extend("Select")
@@ -27,66 +26,47 @@ local select_item = function(content, data)
   return Tree.Node(data)
 end
 
-local focus_item = function(menu, direction, current_linenr)
-  local curr_linenr = current_linenr or vim.api.nvim_win_get_cursor(menu.winid)[1]
-
+local focus_item = function(instance, direction, current_linenr)
+  local props = instance:get_props()
+  local curr_linenr = current_linenr or vim.api.nvim_win_get_cursor(instance.winid)[1]
   local next_linenr = nil
 
   if direction == "next" then
-    if curr_linenr == #menu.tree:get_nodes() then
+    if curr_linenr == #instance.tree:get_nodes() then
       next_linenr = 1
     else
       next_linenr = curr_linenr + 1
     end
   elseif direction == "prev" then
     if curr_linenr == 1 then
-      next_linenr = #menu.tree:get_nodes()
+      next_linenr = #instance.tree:get_nodes()
     else
       next_linenr = curr_linenr - 1
     end
   end
 
-  local next_node = menu.tree:get_node(next_linenr)
+  local next_node = instance.tree:get_node(next_linenr)
 
   if next_linenr then
-    vim.api.nvim_win_set_cursor(menu.winid, {next_linenr, 0})
-    menu.on_change(next_node)
+    vim.api.nvim_win_set_cursor(instance.winid, {next_linenr, 0})
+    props.on_change(next_node)
   end
 end
 
-function Select:init(options, form)
-  self.items =
-    fn.ireduce(
-    options.data,
-    function(acc, item, index)
-      table.insert(
-        acc,
-        type(item) == "string" and select_item(item, {id = index, value = item.value}) or
-          select_item(item.text, {id = item.id, value = item.value})
-      )
-      return acc
-    end,
-    {}
-  )
+function Select:init(props, form)
+  self:__set_items(props.data)
 
   Select.super.init(
     self,
     form,
     vim.tbl_extend(
       "force",
-      options,
+      props,
       {
-        default_value = vim.F.if_nil(options.default_value, {})
+        default_value = vim.F.if_nil(props.default_value, {})
       }
     ),
     {
-      border = {
-        style = options.style,
-        text = {
-          top = options.label,
-          top_align = options.label_align
-        }
-      },
       win_options = {
         cursorline = true,
         scrolloff = 1,
@@ -95,9 +75,12 @@ function Select:init(options, form)
     }
   )
 
-  local initial_state =
-    fn.ireduce(
-    self:get_options().default_value,
+  self:__extend_props()
+end
+
+function Select:initial_state()
+  return fn.ireduce(
+    self:get_props().default_value,
     function(acc, id)
       local selected =
         fn.ifind(
@@ -115,91 +98,116 @@ function Select:init(options, form)
     end,
     {}
   )
+end
 
-  self:set_state(initial_state)
+function Select:mappings()
+  local props = self:get_props()
+  local mode = {"i", "n"}
 
-  self:__setup_props()
+  return {
+    {mode = mode, from = "<CR>", to = props.on_select},
+    {mode = mode, from = "<Space>", to = props.on_select},
+    {mode = mode, from = "j", to = props.on_focus_next},
+    {mode = mode, from = "<Down>", to = props.on_focus_next},
+    {mode = mode, from = "<k>", to = props.on_focus_prev},
+    {mode = mode, from = "<Up>", to = props.on_focus_prev}
+  }
+end
 
-  self.prepare_item = function(node)
-    local line = Line()
+function Select:events()
+  return {
+    {
+      event = event.BufEnter,
+      callback = vim.schedule_wrap(
+        function()
+          vim.api.nvim_command("stopinsert")
+        end
+      )
+    }
+  }
+end
 
-    local is_selected =
-      fn.isome(
-      self:get_state(),
-      function(item)
-        return item.id == node.id
-      end
-    )
-
-    if is_selected then
-      line:append(node.text, "NuiSelectItemSelected")
-    else
-      line:append(node.text)
-    end
-
-    return line
-  end
-
-  self:on(
-    event.BufEnter,
-    vim.schedule_wrap(
-      function()
-        vim.api.nvim_command("stopinsert")
-      end
-    )
+function Select:__set_items(data)
+  self.items =
+    fn.ireduce(
+    data,
+    function(acc, item, index)
+      table.insert(
+        acc,
+        type(item) == "string" and select_item(item, {id = index, value = item.value}) or
+          select_item(item.text, {id = item.id, value = item.value})
+      )
+      return acc
+    end,
+    {}
   )
 end
 
-function Select:__setup_props()
-  self.on_focus_next = function()
-    focus_item(self, "next")
-  end
+function Select:__extend_props()
+  local props = {
+    prepare_item = function(node)
+      local line = Line()
 
-  self.on_focus_prev = function()
-    focus_item(self, "prev")
-  end
-
-  self.on_change = function(node)
-    self.current_entry = node
-  end
-
-  self.on_select = function()
-    local current_state = self:get_state()
-    local obj = {id = self.current_entry.id, text = self.current_entry.text, value = self.current_entry.value}
-
-    if self:get_options().multiselect then
-      local index =
-        fn.find_index(
-        current_state,
-        function(node)
-          return node.id == self.current_entry.id
+      local is_selected =
+        fn.isome(
+        self:get_state(),
+        function(item)
+          return item.id == node.id
         end
       )
 
-      if index then
-        table.remove(current_state, index)
+      if is_selected then
+        line:append(node.text, "NuiSelectItemSelected")
       else
-        table.insert(current_state, obj)
+        line:append(node.text)
       end
 
-      self:set_state(current_state)
-    else
-      self:set_state({obj})
-    end
+      return line
+    end,
+    on_focus_next = function()
+      focus_item(self, "next")
+    end,
+    on_focus_prev = function()
+      focus_item(self, "prev")
+    end,
+    on_change = function(node)
+      self.current_entry = node
+    end,
+    on_select = function()
+      local current_state = self:get_state()
+      local obj = {id = self.current_entry.id, text = self.current_entry.text, value = self.current_entry.value}
 
-    self.tree:render()
-  end
+      if self:get_props().multiselect then
+        local index =
+          fn.find_index(
+          current_state,
+          function(node)
+            return node.id == self.current_entry.id
+          end
+        )
+
+        if index then
+          table.remove(current_state, index)
+        else
+          table.insert(current_state, obj)
+        end
+
+        self:set_state(current_state)
+      else
+        self:set_state({obj})
+      end
+
+      self.tree:render()
+    end
+  }
+
+  self:extend_props(props)
 end
 
 function Select:mount()
-  Select.super.mount(self)
+  local props = self:get_props()
 
-  utils.keymap(self.bufnr, {"i", "n"}, "<CR>", self.on_select)
-  utils.keymap(self.bufnr, {"i", "n"}, "<Space>", self.on_select)
-  utils.keymap(self.bufnr, {"i", "n"}, "j", self.on_focus_next)
-  utils.keymap(self.bufnr, {"i", "n"}, "<Down>", self.on_focus_next)
-  utils.keymap(self.bufnr, {"i", "n"}, "k", self.on_focus_prev)
-  utils.keymap(self.bufnr, {"i", "n"}, "<Up>", self.on_focus_prev)
+  Select.super.mount(self)
 
   self.tree =
     Tree(
@@ -210,7 +218,7 @@ function Select:mount()
       get_node_id = function(node)
         return node._id
       end,
-      prepare_node = self.prepare_item
+      prepare_node = props.prepare_item
     }
   )
 
@@ -223,7 +231,7 @@ function Select:mount()
   for linenr = 1, #self.tree:get_nodes() do
     local node, target_linenr = self.tree:get_node(linenr)
     vim.api.nvim_win_set_cursor(self.winid, {target_linenr, 0})
-    self.on_change(node)
+    props.on_change(node)
     break
   end
 end

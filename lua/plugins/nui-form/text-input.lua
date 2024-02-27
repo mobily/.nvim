@@ -1,54 +1,56 @@
 local Component = require("plugins.nui-form.component")
 
-local event = require("nui.utils.autocmd").event
-local utils = require("plugins.nui-form.utils")
 local fn = require("utils.fn")
+local event = require("nui.utils.autocmd").event
 
 local TextInput = Component:extend("TextInput")
 
-function TextInput:init(options, form)
+function TextInput:init(props, form)
   TextInput.super.init(
     self,
     form,
     vim.tbl_extend(
       "force",
-      options,
+      props,
       {
-        default_value = vim.F.if_nil(options.default_value, "")
+        default_value = vim.F.if_nil(props.default_value, "")
       }
     ),
     {
-      border = {
-        style = options.style,
-        text = {
-          top = options.label,
-          top_align = options.label_align
-        }
-      },
       buf_options = {
-        filetype = options.filetype or ""
+        filetype = props.filetype or ""
       }
     }
   )
+end
 
-  self:set_state(fn.trim(self:get_options().default_value))
+function TextInput:initial_state()
+  return fn.trim(self:get_props().default_value)
+end
 
-  utils.keymap(self.bufnr, {"i", "n"}, "<CR>", "\n")
+function TextInput:mappings()
+  return {
+    {mode = {"i", "n"}, from = "<CR>", to = "\n"}
+  }
+end
 
-  self:on(
-    event.BufEnter,
-    vim.schedule_wrap(
-      function()
-        local has_cmp, cmp = pcall(require, "cmp")
+function TextInput:events()
+  return {
+    {
+      event = event.BufEnter,
+      callback = vim.schedule_wrap(
+        function()
+          local has_cmp, cmp = pcall(require, "cmp")
 
-        vim.api.nvim_command("startinsert!")
+          vim.api.nvim_command("startinsert!")
 
-        if has_cmp then
-          cmp.setup.buffer({enabled = false})
+          if has_cmp then
+            cmp.setup.buffer({enabled = false})
+          end
         end
-      end
-    )
-  )
+      )
+    }
+  }
 end
 
 function TextInput:mount()
@@ -65,7 +67,7 @@ function TextInput:mount()
     }
   )
 
-  local default_value = self:get_options().default_value
+  local default_value = self:get_props().default_value
 
   if #default_value > 0 then
     -- local lines = vim.split(default_value, "\n")

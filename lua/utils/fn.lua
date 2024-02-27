@@ -169,4 +169,13 @@ M.trim = function(str)
   return (str:gsub("^%s*(.-)%s*$", "%1"))
 end
 
+M.ignore = function()
+end
+
+M.always = function(value)
+  return function()
+    return value
+  end
+end
+
 return M

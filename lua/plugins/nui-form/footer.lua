@@ -3,13 +3,12 @@ local Component = require("plugins.nui-form.component")
 local Line = require("nui.line")
 local Text = require("nui.text")
 
-local utils = require("plugins.nui-form.utils")
 local to_macos_keys = require("utils").to_macos_keys
 
 local Footer = Component:extend("Footer")
 
-function Footer:init(options, form)
-  Footer.super.init(self, form, vim.tbl_extend("force", options, {is_focusable = false}))
+function Footer:init(props, form)
+  Footer.super.init(self, form, vim.tbl_extend("force", props, {is_focusable = false}))
 end
 
 function Footer:mount()
@@ -32,11 +31,11 @@ function Footer:mount()
   vim.api.nvim_set_option_value("modifiable", false, {buf = self.bufnr})
 end
 
-function Footer:get_state()
-  return nil
+function Footer:validate()
+  return true
 end
 
-function Footer:validate()
+function Footer:disable_label()
   return true
 end
 
