@@ -62,7 +62,8 @@ local form_tags =
   {
     height = 8,
     key = "tags",
-    label = " 󰓹 Tag ",
+    icon = "󰓹",
+    label = "Tags",
     multiselect = true,
     validate = validator.is_not_empty,
     data = {
@@ -82,14 +83,16 @@ local form_description =
   {
     height = 5,
     key = "description",
-    label = " 󰏫 Description "
+    icon = "󰏫",
+    label = "Description"
   }
 )
 local form_range =
   Form.text_input(
   {
     key = "range",
-    label = " 󰃮 Range ",
+    icon = "󰃮",
+    label = "Range",
     focus = true,
     validate = validator.is_not_empty
   }
@@ -98,7 +101,8 @@ local form_backdate =
   Form.text_input(
   {
     key = "backdate",
-    label = " 󰃮 Backdate ",
+    icon = "󰃮",
+    label = "Backdate",
     focus = true,
     validate = validator.is_not_empty
   }
@@ -107,7 +111,8 @@ local form_id =
   Form.text_input(
   {
     key = "id",
-    label = " 󰛄 @id ",
+    icon = "󰛄",
+    label = "@id",
     focus = true,
     validate = validator.compose(validator.is_not_empty, validator.contains("@"))
   }
@@ -311,7 +316,8 @@ local actions = {
           {
             height = 5,
             key = "type",
-            label = " 󰨲 Type ",
+            icon = "󰨲",
+            label = "Type",
             data = {
               {text = "Day", id = "day"},
               {text = "Week", id = "week"},
