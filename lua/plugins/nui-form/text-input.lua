@@ -19,6 +19,9 @@ function TextInput:init(props, form)
     {
       buf_options = {
         filetype = props.filetype or ""
+      },
+      win_options = {
+        wrap = props.wrap
       }
     }
   )
