@@ -1658,6 +1658,8 @@ lazy.setup {
         "jose-elias-alvarez/null-ls.nvim",
         config = function()
           local null_ls = require("null-ls")
+          local h = require("null-ls.helpers")
+          local methods = require("null-ls.methods")
 
           local b = null_ls.builtins
           local command_resolver = require("null-ls.helpers.command_resolver")
@@ -1701,6 +1703,25 @@ lazy.setup {
           --   }
           -- )
 
+          local luafmt =
+            h.make_builtin(
+            {
+              name = "luafmt",
+              meta = {
+                url = "https://github.com/trixnz/lua-fmt",
+                description = "Reformats your Lua source code."
+              },
+              method = methods.internal.FORMATTING,
+              filetypes = {"lua"},
+              generator_opts = {
+                command = "luafmt",
+                args = {"--stdin", "-i", "2"},
+                to_stdin = true
+              },
+              factory = h.formatter_factory
+            }
+          )
+
           null_ls.setup {
             debug = false,
             sources = {
@@ -1711,10 +1732,11 @@ lazy.setup {
               ),
               b.code_actions.eslint_d,
               b.formatting.rescript,
+              luafmt,
+              -- b.formatting.lua_format,
               b.formatting.prettierd.with {
                 filetypes = {"html", "css", "typescript", "typescriptreact", "javascript", "javascriptreact"}
               },
-              b.formatting.dart_format,
               b.formatting.clang_format,
               b.diagnostics.rubocop.with(
                 {
