@@ -655,7 +655,13 @@ lazy.setup {
           },
           title_pos = "center",
           get_config = function(config)
-            if config.opts.kind == "timetracker" then
+            local options = config.opts
+
+            if not options then
+              return
+            end
+
+            if options.kind == "timetracker" then
               return {
                 relative = "editor"
               }
