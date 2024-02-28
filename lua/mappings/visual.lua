@@ -39,6 +39,14 @@ map(
 )
 
 map(
+  "<PageDown>",
+  function()
+    vim.api.nvim_input("y<PageDown>")
+  end,
+  ""
+)
+
+map(
   "<D-g>",
   function()
     vim.api.nvim_input(":s/")
