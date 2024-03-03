@@ -107,6 +107,17 @@ M.concat = function(...)
   return concatenated
 end
 
+M.kmap = function(tbl, func)
+  return M.kreduce(
+    tbl,
+    function(new_tbl, value, key)
+      table.insert(new_tbl, func(value, key))
+      return new_tbl
+    end,
+    {}
+  )
+end
+
 -- Creates a new table populated with the results of calling a provided functions on every numeric indexed element in the calling table
 M.imap = function(tbl, func)
   return M.ireduce(
@@ -176,6 +187,31 @@ M.always = function(value)
   return function()
     return value
   end
+end
+
+M.debounce = function(fn, ms)
+  local timer = vim.loop.new_timer()
+
+  local function wrapped_fn(...)
+    local args = {...}
+    timer:stop()
+    timer:start(
+      ms,
+      0,
+      function()
+        pcall(
+          vim.schedule_wrap(
+            function(...)
+              fn(...)
+              timer:stop()
+            end
+          ),
+          select(1, unpack(args))
+        )
+      end
+    )
+  end
+  return wrapped_fn, timer
 end
 
 return M

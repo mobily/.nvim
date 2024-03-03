@@ -61,6 +61,9 @@ return {
   WinSeparator = {
     fg = colors.dark["400"]
   },
+  FloatShadow = {
+    bg = colors.dark["100"]
+  },
   Italic = {
     italic = true
   },

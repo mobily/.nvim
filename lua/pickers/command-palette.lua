@@ -44,61 +44,6 @@ local actions = {
     command = "JournalEntry"
   },
   {
-    space = "ollama",
-    name = "chit-chat",
-    command = "Chat"
-  },
-  {
-    space = "ollama",
-    name = "ask about the selected text",
-    command = "X_Ask"
-  },
-  {
-    space = "ollama",
-    name = "generate a detailed description",
-    command = "X_Generate_Description"
-  },
-  {
-    space = "ollama",
-    name = "generate a simple and concise description",
-    command = "X_Generate_Simple_Description"
-  },
-  {
-    space = "ollama",
-    name = "suggest better naming",
-    command = "X_Suggest_Better_Naming"
-  },
-  {
-    space = "ollama",
-    name = "make concise",
-    command = "X_Make_Concise"
-  },
-  {
-    space = "ollama",
-    name = "enhance grammar spelling",
-    command = "X_Enhance_Grammar_Spelling"
-  },
-  {
-    space = "ollama",
-    name = "enhance wording",
-    command = "X_Enhance_Wording"
-  },
-  {
-    space = "ollama",
-    name = "enhance code",
-    command = "X_Enhance_Code"
-  },
-  {
-    space = "ollama",
-    name = "simplify code",
-    command = "X_Simplify_Code"
-  },
-  {
-    space = "ollama",
-    name = "review code",
-    command = "X_Review_Code"
-  },
-  {
     space = "spectre",
     name = "find & replace",
     command = function()

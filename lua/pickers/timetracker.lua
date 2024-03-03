@@ -3,7 +3,7 @@ local fn = require("utils.fn")
 local timetracker = require("plugins.timetracker")
 local utils = require("utils")
 
-local Form = require("plugins.nui-form")
+local Form = require("plugins.nui-components")
 
 local M = {}
 

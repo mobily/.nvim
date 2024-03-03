@@ -1,4 +1,4 @@
-local Form = require("plugins.nui-form")
+local Renderer = require("plugins.nui-components")
 
 local fn = require("utils.fn")
 
@@ -8,9 +8,11 @@ M.toggle = function()
   local register = vim.fn.getreg('"')
   local diags = vim.lsp.diagnostic.get_line_diagnostics()
 
-  local form =
-    Form:new(
+  local h =
+    Renderer:new(
     {
+      width = 80,
+      height = 40,
       on_submit = function(state)
         local id = state.type[1].id
 
@@ -74,92 +76,47 @@ M.toggle = function()
   )
 
   local data = {
-    {
-      text = "chit-chat",
-      id = "chat"
-    },
-    {
-      text = "ask regarding the following text/code",
-      id = "ask"
-    },
-    {
-      type = "separator",
-      text = "󰦨 text "
-    },
-    {
-      text = "modify the following text to improve grammar and spelling",
-      id = "enhance-grammar"
-    },
-    {
-      text = "modify the following text to use better wording",
-      id = "enhance-wording"
-    },
-    {
-      text = "modify the following text to make it as simple and concise as possible",
-      id = "make-concise"
-    },
-    {
-      type = "separator",
-      text = "󰅪 code "
-    },
-    {
-      text = "generate a simple and concise description of the following code",
-      id = "generate-simple-description"
-    },
-    {
-      text = "generate a detailed description of the following code",
-      id = "generate-detailed-description"
-    },
-    {
-      text = "use better names for all provided variables and functions",
-      id = "suggest-better-naming"
-    },
-    {
-      text = "review the following code and make concise suggestions",
-      id = "review-code"
-    },
-    {
-      text = "simplify the following code",
-      id = "simplify-code"
-    },
-    {
-      text = "improve the following code",
-      id = "improve-code"
-    }
+    h.option("chit-chat", {id = "chat"}),
+    h.option("ask regarding the following text/code", {id = "ask"}),
+    h.separator("󰦨 text "),
+    h.option("modify the following text to improve grammar and spelling", {id = "enhance-grammar"}),
+    h.option("modify the following text to use better wording", {id = "enhance-wording"}),
+    h.option("modify the following text to make it as simple and concise as possible", {id = "make-concise"}),
+    h.separator("󰅪 code "),
+    h.option("generate a simple and concise description of the following code", {id = "generate-simple-description"}),
+    h.option("generate a detailed description of the following code", {id = "generate-detailed-description"}),
+    h.option("use better names for all provided variables and functions", {id = "suggest-better-naming"}),
+    h.option("review the following code and make concise suggestions", {id = "review-code"}),
+    h.option("simplify the following code", {id = "simplify-code"}),
+    h.option("improve the following code", {id = "improve-code"})
   }
 
   if #diags > 0 then
-    table.insert(
-      data,
-      3,
-      {
-        text = "learn more about the following issue",
-        id = "issue"
-      }
-    )
+    table.insert(data, 3, h.option("learn more about the following issue", {id = "issue"}))
   end
 
-  -- vim.notify(vim.inspect(diags))
-
-  form:set_content(
-    form.select(
+  local body =
+    h.rows(
+    h.select(
       {
-        height = 10,
+        size = 8,
         focus = true,
-        key = "type",
+        id = "type",
         label = "Hey, Ollama, I'd like to…",
-        shrink_on_blur = true,
+        shrink_to = 1,
         data = data,
         default_value = {"chat"}
       }
     ),
-    form.text_input(
+    h.text_input(
       {
-        height = 16,
-        key = "issue",
-        label = "Issue",
+        flex = 1,
+        id = "issue",
+        label = {
+          text = "Issue",
+          icon = ""
+        },
         wrap = true,
-        icon = "",
         default_value = table.concat(
           fn.ireduce(
             diags,
@@ -176,48 +133,62 @@ M.toggle = function()
           ),
           "\n"
         ),
-        hidden = function(state)
+        on_state_change = function(state)
           local id = state.type[1].id
-          return #diags == 0 or not (id == "issue")
+
+          return {
+            hidden = #diags == 0 or not (id == "issue")
+          }
         end
       }
     ),
-    form.text_input(
+    h.text_input(
       {
-        height = 6,
-        key = "chat",
-        icon = "󰭻",
-        label = "Chat",
+        flex = 1,
+        id = "chat",
+        label = {
+          text = "Chat",
+          icon = "󰭻"
+        },
         wrap = true,
-        hidden = function(state)
+        on_state_change = function(state)
           local id = state.type[1].id
-          return not (id == "chat")
+          return {
+            hidden = not (id == "chat")
+          }
         end
       }
     ),
-    form.text_input(
+    h.text_input(
       {
-        height = 6,
-        key = "question",
-        icon = "",
-        label = "Question",
+        flex = 1,
+        id = "question",
+        label = {
+          text = "Question",
+          icon = ""
+        },
         wrap = true,
-        hidden = function(state)
+        on_state_change = function(state)
           local id = state.type[1].id
-          return not (id == "ask")
+          return {
+            hidden = not (id == "ask")
+          }
         end
       }
     ),
-    form.text_input(
+    h.text_input(
       {
-        height = 16,
-        key = "text",
-        icon = "󰦨",
-        label = "Text",
+        flex = 2,
+        id = "text",
+        label = {
+          text = "Text",
+          icon = "󰦨"
+        },
         default_value = register,
         wrap = true,
-        hidden = function(state)
-          return not fn.isome(
+        on_state_change = function(state)
+          local hidden =
+            not fn.isome(
             {
               "ask",
               "enhance-grammar",
@@ -228,19 +199,26 @@ M.toggle = function()
               return key == state.type[1].id
             end
           )
+
+          return {
+            hidden = hidden
+          }
         end
       }
     ),
-    form.text_input(
+    h.text_input(
       {
-        height = 16,
-        key = "code",
-        icon = "",
-        label = "Code",
+        flex = 1,
+        id = "code",
+        label = {
+          text = "Code",
+          icon = ""
+        },
         default_value = register,
         filetype = vim.bo.filetype,
-        hidden = function(state)
-          return not fn.isome(
+        on_state_change = function(state)
+          local hidden =
+            not fn.isome(
             {
               "generate-simple-description",
               "generate-detailed-description",
@@ -253,13 +231,16 @@ M.toggle = function()
               return key == state.type[1].id
             end
           )
+
+          return {
+            hidden = hidden
+          }
         end
       }
-    ),
-    form.footer()
+    )
   )
 
-  form:open()
+  h:render(body)
 end
 
 return M

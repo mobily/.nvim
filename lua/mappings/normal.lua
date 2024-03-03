@@ -313,6 +313,16 @@ map(
 )
 
 map(
+  "<Home>",
+  function()
+    if is_default_buffer() then
+      local menu = require("pickers.spectre")
+      menu.toggle()
+    end
+  end
+)
+
+map(
   "<D-o>",
   function()
     if is_default_buffer() then

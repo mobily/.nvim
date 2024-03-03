@@ -1112,7 +1112,8 @@ lazy.setup {
     "hrsh7th/nvim-cmp",
     config = function()
       local cmp = require("cmp")
-
+      local compare = require("cmp.config.compare")
+      local types = require("cmp.types")
       vim.o.completeopt = "menu,menuone,noselect"
 
       local function border(hl_name)
@@ -1209,6 +1210,40 @@ lazy.setup {
           {name = "nvim_lua"},
           {name = "path"}
         }
+        -- sorting = {
+        --   comparators = {
+        --     function(entry1, entry2)
+        --       local kind1 = entry1:get_kind() --- @type lsp.CompletionItemKind | number
+        --       local kind2 = entry2:get_kind() --- @type lsp.CompletionItemKind | number
+        --       kind1 = kind1 == types.lsp.CompletionItemKind.Text and 100 or kind1
+        --       kind2 = kind2 == types.lsp.CompletionItemKind.Text and 100 or kind2
+        --       if kind1 ~= kind2 then
+        --         if kind1 == types.lsp.CompletionItemKind.Constant then
+        --           return true
+        --         end
+        --         if kind2 == types.lsp.CompletionItemKind.Constant then
+        --           return false
+        --         end
+        --         local diff = kind1 - kind2
+        --         if diff < 0 then
+        --           return true
+        --         elseif diff > 0 then
+        --           return false
+        --         end
+        --       end
+        --       return nil
+        --     end,
+        --     compare.offset,
+        --     compare.exact,
+        --     compare.score,
+        --     compare.recently_used,
+        --     compare.locality,
+        --     compare.kind,
+        --     compare.sort_text,
+        --     compare.length,
+        --     compare.order
+        --   }
+        -- }
       }
 
       cmp.setup(options)
@@ -1989,7 +2024,10 @@ lazy.setup {
     end
   },
   {
-    "nvim-pack/nvim-spectre"
+    "nvim-pack/nvim-spectre",
+    config = function()
+      require("spectre").setup()
+    end
   },
   {
     "chrisgrieser/nvim-early-retirement",
@@ -2032,5 +2070,17 @@ lazy.setup {
   },
   {
     "MunifTanjim/nui.nvim"
+  },
+  {
+    "code-biscuits/nvim-biscuits",
+    dependencies = {"nvim-treesitter/nvim-treesitter"},
+    config = function()
+      -- require("nvim-biscuits").setup(
+      --   {
+      --     max_length = 4,
+      --     trim_by_words = true
+      --   }
+      -- )
+    end
   }
 }

@@ -1,30 +1,39 @@
-local Component = require("plugins.nui-form.component")
+local Component = require("plugins.nui-components.component")
 
 local fn = require("utils.fn")
 local event = require("nui.utils.autocmd").event
 
 local TextInput = Component:extend("TextInput")
 
-function TextInput:init(props, form)
-  TextInput.super.init(
-    self,
-    form,
+function TextInput:init(props, parent, renderer)
+  props =
     vim.tbl_extend(
-      "force",
-      props,
-      {
-        default_value = vim.F.if_nil(props.default_value, "")
-      }
-    ),
+    "force",
     {
-      buf_options = {
-        filetype = props.filetype or ""
-      },
-      win_options = {
-        wrap = props.wrap
-      }
-    }
+      size = 1,
+      default_value = "",
+      on_change = fn.ignore,
+      on_focus = fn.ignore,
+      on_blur = fn.ignore,
+      label_align = "left",
+      style = "rounded"
+    },
+    props
   )
+
+  local popup_options = {
+    buf_options = {
+      filetype = props.filetype or ""
+    },
+    win_options = {
+      wrap = props.wrap
+    },
+    border = {
+      style = props.style
+    }
+  }
+
+  TextInput.super.init(self, parent, renderer, props, popup_options)
 end
 
 function TextInput:initial_state()
@@ -38,6 +47,8 @@ function TextInput:mappings()
 end
 
 function TextInput:events()
+  local props = self:get_props()
+
   return {
     {
       event = event.BufEnter,
@@ -52,11 +63,20 @@ function TextInput:events()
           end
         end
       )
+    },
+    {
+      event = event.BufLeave,
+      callback = function()
+        vim.api.nvim_command("stopinsert")
+      end
     }
   }
 end
 
 function TextInput:mount()
+  local props = self:get_props()
+  local renderer = self:get_renderer()
+
   TextInput.super.mount(self)
 
   vim.api.nvim_buf_attach(
@@ -64,8 +84,11 @@ function TextInput:mount()
     false,
     {
       on_lines = function()
-        local value = vim.api.nvim_buf_get_lines(self.bufnr, 0, -1, false)
-        self:set_state(fn.trim(table.concat(value, "\n")))
+        local lines = vim.api.nvim_buf_get_lines(self.bufnr, 0, -1, false)
+        local value = fn.trim(table.concat(lines, "\n"))
+
+        self:set_state(value)
+        props.on_change(value, renderer.state, self)
       end
     }
   )

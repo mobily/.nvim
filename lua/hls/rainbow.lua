@@ -2,7 +2,7 @@ local colors = require("ui.colors")
 
 return {
   RainbowDelimiterBlue = {
-    fg = colors.blue["200"]
+    fg = colors.grey["400"]
     -- fg = "#84D1C0"
   },
   RainbowDelimiterRed = {
