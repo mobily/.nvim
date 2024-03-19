@@ -6,15 +6,12 @@ M.signature_window = function(_, result, ctx, config)
 
   if winner then
     if current_cursor_line > 3 then
-      vim.api.nvim_win_set_config(
-        winner,
-        {
-          anchor = "SW",
-          relative = "cursor",
-          row = 0,
-          col = -1
-        }
-      )
+      vim.api.nvim_win_set_config(winner, {
+        anchor = "SW",
+        relative = "cursor",
+        row = 0,
+        col = -1,
+      })
     end
   end
 
@@ -55,7 +52,7 @@ local open_signature = function()
 
     -- csharp has wrong trigger chars for some odd reason
     if client.name == "csharp" then
-      triggers = {"(", ","}
+      triggers = { "(", "," }
     end
 
     local pos = vim.api.nvim_win_get_cursor(0)
@@ -73,38 +70,32 @@ local open_signature = function()
       0,
       "textDocument/signatureHelp",
       params,
-      vim.lsp.with(
-        M.signature_window,
-        {
-          border = "rounded",
-          focusable = false
-        }
-      )
+      vim.lsp.with(M.signature_window, {
+        border = "rounded",
+        focusable = false,
+      })
     )
   end
 end
 
 M.setup = function(client)
   table.insert(clients, client)
-  local group = augroup("LspSignature", {clear = false})
-  vim.api.nvim_clear_autocmds {group = group, pattern = "<buffer>"}
+  local group = augroup("LspSignature", { clear = false })
+  vim.api.nvim_clear_autocmds({ group = group, pattern = "<buffer>" })
 
-  autocmd(
-    "TextChangedI",
-    {
-      group = group,
-      pattern = "<buffer>",
-      callback = function()
-        -- Guard against spamming of method not supported after
-        -- stopping a language serer with LspStop
-        local active_clients = vim.lsp.get_active_clients()
-        if #active_clients < 1 then
-          return
-        end
-        open_signature()
+  autocmd("TextChangedI", {
+    group = group,
+    pattern = "<buffer>",
+    callback = function()
+      -- Guard against spamming of method not supported after
+      -- stopping a language serer with LspStop
+      local active_clients = vim.lsp.get_active_clients()
+      if #active_clients < 1 then
+        return
       end
-    }
-  )
+      open_signature()
+    end,
+  })
 end
 
 return M

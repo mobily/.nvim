@@ -1,10 +1,6 @@
 local M = {}
 
--- https://github.com/lunarmodules/Penlight/blob/master/lua/pl/utils.lua
--- An iterator over all non-integer keys (inverse of `ipairs`).
--- This uses `pairs` under the hood, so any value that is iterable using `pairs`
--- will work with this function.
-M.kpairs = function(t)
+function M.kpairs(t)
   local index
   return function()
     local value
@@ -18,16 +14,14 @@ M.kpairs = function(t)
   end
 end
 
--- Executes a user-supplied "reducer" callback function on each element of the table indexed with a numeric key, in order, passing in the return value from the calculation on the preceding element
-M.ireduce = function(tbl, func, acc)
+function M.ireduce(tbl, func, acc)
   for i, v in ipairs(tbl) do
     acc = func(acc, v, i)
   end
   return acc
 end
 
--- Executes a user-supplied "reducer" callback function on each key element of the table indexed with a string key, in order, passing in the return value from the calculation on the preceding element
-M.kreduce = function(tbl, func, acc)
+function M.kreduce(tbl, func, acc)
   for i, v in pairs(tbl) do
     if type(i) == "string" then
       acc = func(acc, v, i)
@@ -36,16 +30,14 @@ M.kreduce = function(tbl, func, acc)
   return acc
 end
 
--- Executes a user-supplied "reducer" callback function on each element of the table, in order, passing in the return value from the calculation on the preceding element
-M.reduce = function(tbl, func, acc)
+function M.reduce(tbl, func, acc)
   for i, v in pairs(tbl) do
     acc = func(acc, v, i)
   end
   return acc
 end
 
--- Returns the index of the first element in the array that satisfies the provided testing function
-M.find_index = function(tbl, func)
+function M.find_index(tbl, func)
   for index, item in ipairs(tbl) do
     if func(item, index) then
       return index
@@ -55,7 +47,7 @@ M.find_index = function(tbl, func)
   return nil
 end
 
-M.isome = function(tbl, func)
+function M.isome(tbl, func)
   for index, item in ipairs(tbl) do
     if func(item, index) then
       return true
@@ -65,8 +57,7 @@ M.isome = function(tbl, func)
   return false
 end
 
--- Returns the first element in the array that satisfies the provided testing function
-M.ifind = function(tbl, func)
+function M.ifind(tbl, func)
   for index, item in ipairs(tbl) do
     if func(item, index) then
       return item
@@ -76,7 +67,7 @@ M.ifind = function(tbl, func)
   return nil
 end
 
-M.find_last_index = function(tbl, func)
+function M.find_last_index(tbl, func)
   for index = #tbl, 1, -1 do
     if func(tbl[index], index) then
       return index
@@ -84,7 +75,7 @@ M.find_last_index = function(tbl, func)
   end
 end
 
-M.slice = function(tbl, startIndex, endIndex)
+function M.slice(tbl, startIndex, endIndex)
   local sliced = {}
   endIndex = endIndex or #tbl
 
@@ -95,10 +86,10 @@ M.slice = function(tbl, startIndex, endIndex)
   return sliced
 end
 
-M.concat = function(...)
+function M.concat(...)
   local concatenated = {}
 
-  for _, tbl in ipairs({...}) do
+  for _, tbl in ipairs({ ... }) do
     for _, value in ipairs(tbl) do
       table.insert(concatenated, value)
     end
@@ -107,37 +98,33 @@ M.concat = function(...)
   return concatenated
 end
 
-M.kmap = function(tbl, func)
-  return M.kreduce(
-    tbl,
-    function(new_tbl, value, key)
-      table.insert(new_tbl, func(value, key))
-      return new_tbl
-    end,
-    {}
-  )
+function M.kmap(tbl, func)
+  return M.kreduce(tbl, function(new_tbl, value, key)
+    table.insert(new_tbl, func(value, key))
+    return new_tbl
+  end, {})
 end
 
--- Creates a new table populated with the results of calling a provided functions on every numeric indexed element in the calling table
-M.imap = function(tbl, func)
-  return M.ireduce(
-    tbl,
-    function(new_tbl, value, index)
-      table.insert(new_tbl, func(value, index))
-      return new_tbl
-    end,
-    {}
-  )
+function M.imap(tbl, func)
+  return M.ireduce(tbl, function(new_tbl, value, index)
+    table.insert(new_tbl, func(value, index))
+    return new_tbl
+  end, {})
 end
 
-M.ieach = function(tbl, func)
+function M.ieach(tbl, func)
   for index, element in ipairs(tbl) do
     func(element, index)
   end
 end
 
--- Returns an array of a given table's string-keyed property names.
-M.keys = function(tbl)
+function M.keach(tbl, func)
+  for key, element in M.kpairs(tbl) do
+    func(element, key)
+  end
+end
+
+function M.keys(tbl)
   local keys = {}
   for key, _ in M.kpairs(tbl) do
     table.insert(keys, key)
@@ -145,8 +132,7 @@ M.keys = function(tbl)
   return keys
 end
 
--- Returns an array of a given table's numbered-keyed property names.
-M.indexes = function(tbl)
+function M.indexes(tbl)
   local indexes = {}
   for key, _ in ipairs(tbl) do
     table.insert(indexes, key)
@@ -154,20 +140,45 @@ M.indexes = function(tbl)
   return indexes
 end
 
--- Creates a new function that, when called, has its arguments preceded by any provided ones
-M.bind = function(func, ...)
-  local boundArgs = {...}
+function M.bind(func, ...)
+  local boundArgs = { ... }
 
   return function(...)
-    return func(unpack(boundArgs), ...)
+    return func(M.unpack(boundArgs), ...)
   end
 end
 
-M.ifilter = function(tbl, func)
-  return vim.tbl_filter(func, tbl)
+function M.ifilter(tbl, pred_fn)
+  return M.ireduce(tbl, function(new_tbl, value, index)
+    if pred_fn(value, index) then
+      table.insert(new_tbl, value)
+    end
+    return new_tbl
+  end, {})
 end
 
-M.switch = function(param, t)
+function M.ireject(tbl, pred_fn)
+  return M.ifilter(tbl, function(value, index)
+    return not pred_fn(value, index)
+  end)
+end
+
+function M.kfilter(tbl, pred_fn)
+  return M.kreduce(tbl, function(new_tbl, value, key)
+    if pred_fn(value, key) then
+      new_tbl[key] = value
+    end
+    return new_tbl
+  end, {})
+end
+
+function M.kreject(tbl, pred_fn)
+  return M.kfilter(tbl, function(value, index)
+    return not pred_fn(value, index)
+  end)
+end
+
+function M.switch(param, t)
   local case = t[param]
   if case then
     return case()
@@ -176,42 +187,98 @@ M.switch = function(param, t)
   return defaultFn and defaultFn() or nil
 end
 
-M.trim = function(str)
+function M.trim(str)
   return (str:gsub("^%s*(.-)%s*$", "%1"))
 end
 
-M.ignore = function()
-end
+function M.ignore() end
 
-M.always = function(value)
+function M.always(value)
   return function()
     return value
   end
 end
 
-M.debounce = function(fn, ms)
+function M.identity(value)
+  return value
+end
+
+function M.debounce(fn, ms)
   local timer = vim.loop.new_timer()
 
   local function wrapped_fn(...)
-    local args = {...}
+    local args = { ... }
     timer:stop()
-    timer:start(
-      ms,
-      0,
-      function()
-        pcall(
-          vim.schedule_wrap(
-            function(...)
-              fn(...)
-              timer:stop()
-            end
-          ),
-          select(1, unpack(args))
-        )
-      end
-    )
+    timer:start(ms, 0, function()
+      pcall(
+        vim.schedule_wrap(function(...)
+          fn(...)
+          timer:stop()
+        end),
+        select(1, M.unpack(args))
+      )
+    end)
   end
   return wrapped_fn, timer
+end
+
+M.pack = table.pack or function(...)
+  return { n = select("#", ...), ... }
+end
+
+---@diagnostic disable-next-line: deprecated
+M.unpack = table.unpack or unpack
+
+function M.eq(x, y)
+  return x == y
+end
+
+function M.constant(x)
+  return function()
+    return x
+  end
+end
+
+function M.clamp(value, min, max)
+  return math.min(math.max(value, min), max)
+end
+
+function M.isa(object, class)
+  local mt = getmetatable(object)
+
+  if mt and object then
+    return type(object) == "table" and mt.__index == class
+  end
+
+  return false
+end
+
+function M.default_to(value, default_value)
+  return vim.F.if_nil(value, default_value)
+end
+
+function M.merge(fst, snd)
+  return vim.tbl_extend("force", fst, snd)
+end
+
+function M.deep_merge(fst, snd)
+  return vim.tbl_deep_extend("force", fst, snd)
+end
+
+function M.preserve_cursor_position(fn)
+  local line, col = M.unpack(vim.api.nvim_win_get_cursor(0))
+
+  fn()
+
+  vim.schedule(function()
+    local lastline = vim.fn.line("$")
+
+    if line > lastline then
+      line = lastline
+    end
+
+    vim.api.nvim_win_set_cursor(0, { line, col })
+  end)
 end
 
 return M

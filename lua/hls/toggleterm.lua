@@ -1,6 +1,6 @@
 return {
   FloatBorder = {
     guifg = "#30313c",
-    guibg = "#151825"
-  }
+    guibg = "#151825",
+  },
 }

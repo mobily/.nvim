@@ -28,32 +28,22 @@ map("<C-i>", "<Esc><C-w>k", "window up")
 map("<Tab>", "<C-T>", "indent")
 map("<S-Tab>", "<C-D>", "unindent")
 
-map(
-  "<D-s>",
-  function()
-    vim.api.nvim_command("write")
-  end,
-  "save file"
-)
-map(
-  "<D-/>",
-  function()
-    vim.api.nvim_input("<Esc>gcca")
-  end,
-  "comment line"
-)
-map(
-  "<D-S-BS>",
-  function()
-    vim.api.nvim_input("<Esc>")
-    lastline = vim.api.nvim_eval('line(".") == line("$")')
+map("<D-s>", function()
+  vim.api.nvim_command("write")
+end, "save file")
 
-    if lastline == 1 then
-      vim.api.nvim_input('"_ddi')
-      return
-    end
+map("<D-/>", function()
+  vim.api.nvim_input("<Esc>gcca")
+end, "comment line")
 
-    vim.api.nvim_input('"_dd<Up>i')
-  end,
-  "delete line"
-)
+map("<D-S-BS>", function()
+  vim.api.nvim_input("<Esc>")
+  local lastline = vim.api.nvim_eval('line(".") == line("$")')
+
+  if lastline == 1 then
+    vim.api.nvim_input('"_ddi')
+    return
+  end
+
+  vim.api.nvim_input('"_dd<Up>i')
+end, "delete line")

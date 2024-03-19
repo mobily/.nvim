@@ -2,7 +2,7 @@ vim.env.PATH = vim.env.PATH .. ":" .. vim.fn.stdpath("data") .. "/mason/bin"
 vim.env.PATH = vim.env.PATH .. ":" .. vim.fn.expand("$HOME") .. "/.flutter/bin"
 vim.env.PATH = vim.env.PATH .. ":" .. vim.fn.expand("$HOME") .. "/.rbenv/shims"
 
-vim.opt.guifont = {"JetBrainsMonoMedium Nerd Font", ":h14"}
+vim.opt.guifont = { "JetBrainsMonoMedium Nerd Font", ":h14" }
 -- vim.opt.guifont = {"Hack", ":h16"}
 vim.opt.guicursor = "n-v-c-sm:hor25,i-ci-ve:ver25,r-cr-o:block"
 vim.opt.autoindent = true
@@ -16,7 +16,7 @@ vim.opt.cursorline = true
 
 vim.wo.relativenumber = true
 
-vim.cmd "set noequalalways"
+vim.cmd("set noequalalways")
 
 -- indenting
 vim.opt.expandtab = true
@@ -25,7 +25,7 @@ vim.opt.smartindent = true
 vim.opt.tabstop = 2
 vim.opt.softtabstop = 2
 
-vim.opt.fillchars = {eob = " "}
+vim.opt.fillchars = { eob = " " }
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
 vim.opt.mouse = "a"
@@ -36,7 +36,7 @@ vim.opt.numberwidth = 2
 vim.opt.ruler = false
 
 -- disable nvim intro
-vim.opt.shortmess:append "sI"
+vim.opt.shortmess:append("sI")
 
 vim.opt.signcolumn = "yes"
 vim.opt.splitbelow = true
@@ -50,7 +50,7 @@ vim.opt.updatetime = 250
 
 -- go to previous/next line with h,l,left arrow and right arrow
 -- when cursor reaches end/beginning of line
-vim.opt.whichwrap:append "<>[]hl"
+vim.opt.whichwrap:append("<>[]hl")
 
 vim.g.mapleader = "\\"
 vim.g.luasnippets_path = vim.fn.expand("$HOME") .. "/.config/nvim/lua/snippets"
@@ -93,7 +93,7 @@ local default_plugins = {
   "optwin",
   "compiler",
   "bugreport",
-  "ftplugin"
+  "ftplugin",
 }
 
 for _, plugin in pairs(default_plugins) do
@@ -104,7 +104,7 @@ local default_providers = {
   "node",
   "perl",
   "python3",
-  "ruby"
+  "ruby",
 }
 
 for _, provider in ipairs(default_providers) do

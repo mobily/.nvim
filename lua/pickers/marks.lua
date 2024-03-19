@@ -1,8 +1,8 @@
 local M = {}
 
-local utils = require("utils")
 local fn = require("utils.fn")
 local previewers = require("telescope.previewers")
+local utils = require("utils")
 
 local make_picker = function(results, opts)
   local finders = require("telescope.finders")
@@ -11,19 +11,18 @@ local make_picker = function(results, opts)
 
   opts = opts or {}
 
-  require("telescope.pickers").new(
-    opts,
-    {
-      finder = finders.new_table {
+  require("telescope.pickers")
+    .new(opts, {
+      finder = finders.new_table({
         results = results,
-        entry_maker = make_entry.gen_from_marks(opts)
-      },
+        entry_maker = make_entry.gen_from_marks(opts),
+      }),
       previewer = config.grep_previewer(opts),
       sorter = config.generic_sorter(opts),
       push_cursor_on_edit = true,
-      push_tagstack_on_edit = true
-    }
-  ):find()
+      push_tagstack_on_edit = true,
+    })
+    :find()
 end
 
 local make_bookmarks_picker = function()
@@ -34,7 +33,7 @@ local make_bookmarks_picker = function()
 
   local bookmarks = {}
 
-  for group_nr, group in pairs(groups) do
+  for _, group in pairs(groups) do
     for bufnr, buffer_marks in pairs(group.marks) do
       for lnum, mark in pairs(buffer_marks) do
         local name = utils.normalize_path(vim.fn.getbufinfo(bufnr)[1].name)
@@ -44,15 +43,12 @@ local make_bookmarks_picker = function()
 
         local text = string.format("%s %6d %4d %s", group.sign, lnum, col, name)
 
-        table.insert(
-          bookmarks,
-          {
-            line = text,
-            lnum = lnum,
-            col = col,
-            filename = vim.api.nvim_buf_get_name(bufnr)
-          }
-        )
+        table.insert(bookmarks, {
+          line = text,
+          lnum = lnum,
+          col = col,
+          filename = vim.api.nvim_buf_get_name(bufnr),
+        })
 
         -- local flag = bufnr == vim.fn.bufnr "" and "%" or (bufnr == vim.fn.bufnr "#" and "#" or " ")
 
@@ -78,12 +74,9 @@ local make_bookmarks_picker = function()
     end
   end
 
-  make_picker(
-    bookmarks,
-    {
-      prompt_title = "Bookmarks"
-    }
-  )
+  make_picker(bookmarks, {
+    prompt_title = "Bookmarks",
+  })
 
   -- vim.notify(vim.inspect(buffers))
 
@@ -96,7 +89,8 @@ local make_marks = function(bufnr, buffer_state, opts)
 
   marks = opts.marks or {}
 
-  local map_name = opts.map_name or function(bufnr, lnum)
+  local map_name = opts.map_name
+    or function(bufnr, lnum)
       return utils.normalize_path(vim.fn.getbufinfo(bufnr)[1].name)
     end
 
@@ -107,15 +101,12 @@ local make_marks = function(bufnr, buffer_state, opts)
 
     local text = string.format("%s %6d %4d %s", mark, lnum, col, name)
 
-    table.insert(
-      marks,
-      {
-        line = text,
-        lnum = lnum,
-        col = col,
-        filename = vim.api.nvim_buf_get_name(bufnr)
-      }
-    )
+    table.insert(marks, {
+      line = text,
+      lnum = lnum,
+      col = col,
+      filename = vim.api.nvim_buf_get_name(bufnr),
+    })
   end
 
   return marks
@@ -150,15 +141,12 @@ local make_marks_picker = function()
   local marks = {}
 
   for bufnr, buffer_state in pairs(buffers) do
-    make_marks(bufnr, buffer_state, {marks = marks})
+    make_marks(bufnr, buffer_state, { marks = marks })
   end
 
-  make_picker(
-    marks,
-    {
-      prompt_title = "Marks"
-    }
-  )
+  make_picker(marks, {
+    prompt_title = "Marks",
+  })
 end
 
 local make_buffer_marks_picker = function()
@@ -169,23 +157,15 @@ local make_buffer_marks_picker = function()
     return
   end
 
-  local marks =
-    make_marks(
-    bufnr,
-    buffers[bufnr],
-    {
-      map_name = function(bufnr, lnum)
-        return fn.trim(vim.api.nvim_buf_get_lines(bufnr, lnum - 1, lnum, true)[1])
-      end
-    }
-  )
+  local marks = make_marks(bufnr, buffers[bufnr], {
+    map_name = function(bufnr, lnum)
+      return fn.trim(vim.api.nvim_buf_get_lines(bufnr, lnum - 1, lnum, true)[1])
+    end,
+  })
 
-  make_picker(
-    marks,
-    {
-      prompt_title = "Buffer Marks"
-    }
-  )
+  make_picker(marks, {
+    prompt_title = "Buffer Marks",
+  })
 end
 
 local toggle_bookmark = function(bookmark)
@@ -246,56 +226,54 @@ M.actions = {
   {
     name = "toggle bookmark · ",
     keymap = "<D-1>",
-    handler = toggle_bookmark(1)
+    handler = toggle_bookmark(1),
   },
   {
     name = "toggle bookmark · ",
     keymap = "<D-2>",
-    handler = toggle_bookmark(2)
+    handler = toggle_bookmark(2),
   },
   {
     name = "toggle mark",
     keymap = "m",
-    handler = require("marks").toggle
+    handler = require("marks").toggle,
   },
   {
     name = "delete buffer bookmarks",
     keymap = "dd",
-    handler = delete_buffer_bookmarks
+    handler = delete_buffer_bookmarks,
   },
   {
     name = "delete buffer marks",
     keymap = "dm",
-    handler = require("marks").delete_buf
+    handler = require("marks").delete_buf,
   },
   {
     name = "list current buffer marks",
     keymap = "<D-m>",
-    handler = make_buffer_marks_picker
+    handler = make_buffer_marks_picker,
   },
   {
     name = "list all marks",
     keymap = "<D-a>",
-    handler = make_marks_picker
+    handler = make_marks_picker,
   },
   {
     name = "list all bookmarks",
     keymap = "<D-l>",
-    handler = make_bookmarks_picker
-  }
+    handler = make_bookmarks_picker,
+  },
 }
 
 M.options = {
   prompt_title = function(args)
     return "Marks"
   end,
-  theme = require("telescope.themes").get_cursor(
-    {
-      layout_config = {
-        height = 0.3
-      }
-    }
-  )
+  theme = require("telescope.themes").get_cursor({
+    layout_config = {
+      height = 0.3,
+    },
+  }),
 }
 
 return M

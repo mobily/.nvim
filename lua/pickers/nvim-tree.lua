@@ -1,7 +1,7 @@
 local M = {}
 
-local utils = require("utils")
 local fn = require("utils.fn")
+local utils = require("utils")
 
 local make_finder = function(directory)
   local root = vim.loop.cwd()
@@ -9,7 +9,7 @@ local make_finder = function(directory)
   local rootRelativeCwd = root == searchDirectory and "/" or string.gsub(searchDirectory, root, "")
   local options = {
     cwd = searchDirectory,
-    prompt_title = "Search in " .. rootRelativeCwd
+    prompt_title = "Search in " .. rootRelativeCwd,
   }
 
   require("telescope.builtin").live_grep(options)
@@ -17,11 +17,9 @@ end
 
 local schedule = function(fn)
   return function(args)
-    utils.schedule(
-      function()
-        fn(args)
-      end
-    )
+    utils.schedule(function()
+      fn(args)
+    end)
   end
 end
 
@@ -94,7 +92,7 @@ M.actions = {
     name = "search node contents",
     keymap = "<D-f>",
     plugin_keymap = "<D-f>",
-    handler = require("nvim-tree.utils").inject_node(search_in_node)
+    handler = require("nvim-tree.utils").inject_node(search_in_node),
   },
   -- {
   --   name = "Search node",
@@ -105,124 +103,124 @@ M.actions = {
     name = "edit in vertical split",
     keymap = "<D-e>",
     -- plugin_keymap = "<D-CR>",
-    handler = require("nvim-tree.api").node.open.vertical
+    handler = require("nvim-tree.api").node.open.vertical,
   },
   {
     name = "edit in horizontal split",
     keymap = "<D-l>",
     -- plugin_keymap = "<C-CR>",
-    handler = require("nvim-tree.api").node.open.horizontal
+    handler = require("nvim-tree.api").node.open.horizontal,
   },
   {
     name = "edit in tab",
     keymap = "<D-t>",
-    handler = require("nvim-tree.api").node.open.tab
+    handler = require("nvim-tree.api").node.open.tab,
   },
   {
     name = "open with the system app",
     keymap = "<C-o>",
-    handler = require("nvim-tree.api").node.run.system
+    handler = require("nvim-tree.api").node.run.system,
   },
   {
     name = "add a new node",
     keymap = "<D-a>",
     -- plugin_keymap = "a",
-    handler = schedule(require("nvim-tree.api").fs.create)
+    handler = schedule(require("nvim-tree.api").fs.create),
   },
   {
     name = "delete node",
     keymap = "<D-d>",
     -- plugin_keymap = "d",
-    handler = schedule(require("nvim-tree.api").fs.remove)
+    handler = schedule(require("nvim-tree.api").fs.remove),
   },
   {
     name = "trash node",
     keymap = "<C-d>",
     -- plugin_keymap = "D",
-    handler = schedule(require("nvim-tree.api").fs.trash)
+    handler = schedule(require("nvim-tree.api").fs.trash),
   },
   {
     name = "rename node",
     keymap = "<D-r>",
     -- plugin_keymap = "r",
-    handler = schedule(require("nvim-tree.api").fs.rename)
+    handler = schedule(require("nvim-tree.api").fs.rename),
   },
   {
     name = "fully rename node",
     keymap = "<C-r>",
     -- plugin_keymap = "R",
-    handler = require("nvim-tree.api").fs.rename_sub
+    handler = require("nvim-tree.api").fs.rename_sub,
   },
   {
     name = "copy",
     keymap = "<D-c>",
     -- plugin_keymap = "c",
-    handler = require("nvim-tree.api").fs.copy.node
+    handler = require("nvim-tree.api").fs.copy.node,
   },
   {
     name = "cut",
     keymap = "<D-x>",
     -- plugin_keymap = "x",
-    handler = require("nvim-tree.api").fs.cut
+    handler = require("nvim-tree.api").fs.cut,
   },
   {
     name = "paste",
     keymap = "<D-v>",
     -- plugin_keymap = "p",
-    handler = require("nvim-tree.api").fs.paste
+    handler = require("nvim-tree.api").fs.paste,
   },
   {
     name = "copy node name",
     keymap = "<leader>y",
     -- plugin_keymap = "y",
-    handler = require("nvim-tree.api").fs.copy.filename
+    handler = require("nvim-tree.api").fs.copy.filename,
   },
   {
     name = "copy relative path",
     keymap = "<leader>gg",
     -- plugin_keymap = "gg",
-    handler = require("nvim-tree.api").fs.copy.relative_path
+    handler = require("nvim-tree.api").fs.copy.relative_path,
   },
   {
     name = "copy absolute path",
     keymap = "<leader>gy",
     -- plugin_keymap = "gy",
-    handler = require("nvim-tree.api").fs.copy.absolute_path
+    handler = require("nvim-tree.api").fs.copy.absolute_path,
   },
   {
     name = "refresh",
     keymap = "<leader>r",
     -- plugin_keymap = "R",
-    handler = require("nvim-tree.api").tree.reload
+    handler = require("nvim-tree.api").tree.reload,
   },
   {
     name = "collapse all nodes",
     keymap = "<leader>w",
     -- plugin_keymap = "W",
-    handler = require("nvim-tree.api").tree.collapse_all
+    handler = require("nvim-tree.api").tree.collapse_all,
   },
   {
     name = "expand all nodes",
     keymap = "<leader>e",
     plugin_keymap = "E",
-    handler = require("nvim-tree.api").tree.expand_all
+    handler = require("nvim-tree.api").tree.expand_all,
   },
   {
     name = "close node",
     keymap = "<D-BS>",
     -- plugin_keymap = "<BS>",
-    handler = require("nvim-tree.api").node.navigate.parent_close
+    handler = require("nvim-tree.api").node.navigate.parent_close,
   },
   {
     name = "open node",
     keymap = "<D-o>",
     -- plugin_keymap = "<CR>",
-    handler = require("nvim-tree.api").node.open.edit
+    handler = require("nvim-tree.api").node.open.edit,
   },
   {
     name = "change directory here",
     keymap = "<D-]>",
-    handler = require("nvim-tree.api").tree.change_root_to_node
+    handler = require("nvim-tree.api").tree.change_root_to_node,
   },
   -- {
   --   name = "go to node parent",
@@ -243,7 +241,7 @@ M.actions = {
     name = "toggle help",
     keymap = "<leader>?",
     -- plugin_keymap = "g?",
-    handler = require("nvim-tree.api").tree.toggle_help
+    handler = require("nvim-tree.api").tree.toggle_help,
   },
   -- {
   --   name = "Change root up one directory",
@@ -254,46 +252,44 @@ M.actions = {
     name = "toggle custom filter",
     keymap = "<leader>u",
     -- plugin_keymap = "U",
-    handler = require("nvim-tree.api").tree.toggle_custom_filter
+    handler = require("nvim-tree.api").tree.toggle_custom_filter,
   },
   {
     name = "toggle gitignore filter",
     keymap = "<leader>i",
     -- plugin_keymap = "I",
-    handler = require("nvim-tree.api").tree.toggle_gitignore_filter
+    handler = require("nvim-tree.api").tree.toggle_gitignore_filter,
   },
   {
     name = "toggle dotfiles filter",
     keymap = "<leader>h",
     -- plugin_keymap = "H",
-    handler = require("nvim-tree.api").tree.toggle_hidden_filter
+    handler = require("nvim-tree.api").tree.toggle_hidden_filter,
   },
   {
     name = "view info",
     keymap = "<D-i>",
-    handler = require("nvim-tree.api").node.show_info_popup
+    handler = require("nvim-tree.api").node.show_info_popup,
   },
   {
     name = "close",
     keymap = "<D-w>",
-    handler = require("nvim-tree.api").tree.close
-  }
+    handler = require("nvim-tree.api").tree.close,
+  },
 }
 
 M.options = {
   prompt_title = function(node)
     return node.name
   end,
-  inject = function(fn)
-    return fn(require("nvim-tree.lib").get_node_at_cursor())
+  inject = function(inject_fn)
+    return inject_fn(require("nvim-tree.lib").get_node_at_cursor())
   end,
-  theme = require("telescope.themes").get_cursor(
-    {
-      layout_config = {
-        height = 0.3
-      }
-    }
-  )
+  theme = require("telescope.themes").get_cursor({
+    layout_config = {
+      height = 0.3,
+    },
+  }),
 }
 
 return M

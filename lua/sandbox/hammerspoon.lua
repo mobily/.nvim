@@ -39,7 +39,7 @@ function HammerSpoon:__curl(method, path, body)
     "--silent",
     body ~= nil and "-d " .. json or "",
     "-X " .. method,
-    self:__get_full_path(path)
+    self:__get_full_path(path),
   }
 
   local result = vim.fn.system(table.concat(cmd, " "))
@@ -48,42 +48,28 @@ function HammerSpoon:__curl(method, path, body)
 end
 
 local hs = HammerSpoon:new()
-local augroup = vim.api.nvim_create_augroup("HammerSpoon", {clear = true})
+local augroup = vim.api.nvim_create_augroup("HammerSpoon", { clear = true })
 
-vim.api.nvim_create_user_command(
-  "HammerspoonDisplayNotification",
-  function(opts)
-    hs:post("notification", {value = opts.args})
+vim.api.nvim_create_user_command("HammerspoonDisplayNotification", function(opts)
+  hs:post("notification", { value = opts.args })
+end, { nargs = "?" })
+
+vim.api.nvim_create_user_command("HammerspoonAnnotate", function()
+  hs:get("annotate")
+end, {})
+
+vim.api.nvim_create_autocmd("VimEnter", {
+  group = augroup,
+  callback = function()
+    hs:post("connect", { servername = vim.api.nvim_eval("v:servername") })
   end,
-  {nargs = "?"}
-)
+})
 
-vim.api.nvim_create_user_command(
-  "HammerspoonAnnotate",
-  function(opts)
-    hs:get("annotate")
+vim.api.nvim_create_autocmd("VimLeave", {
+  group = augroup,
+  callback = function()
+    hs:post("disconnect", { servername = vim.api.nvim_eval("v:servername") })
   end,
-  {}
-)
-
-vim.api.nvim_create_autocmd(
-  "VimEnter",
-  {
-    group = augroup,
-    callback = function()
-      hs:post("connect", {servername = vim.api.nvim_eval("v:servername")})
-    end
-  }
-)
-
-vim.api.nvim_create_autocmd(
-  "VimLeave",
-  {
-    group = augroup,
-    callback = function()
-      hs:post("disconnect", {servername = vim.api.nvim_eval("v:servername")})
-    end
-  }
-)
+})
 
 return hs

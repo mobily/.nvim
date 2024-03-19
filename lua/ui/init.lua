@@ -13,7 +13,7 @@ M.term = {
   comment = "#565656",
   constant = "#ab7aef",
   error = "#FF3333",
-  fg_idle = "#565656"
+  fg_idle = "#565656",
 }
 
 vim.g.terminal_color_0 = M.term.bg

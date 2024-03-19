@@ -1,9 +1,9 @@
-local theme = require("lualine.themes.auto")
 local colors = require("ui.colors")
+local theme = require("lualine.themes.auto")
 
 local default_colors = {
   bg = "none",
-  fg = colors.dark["300"]
+  fg = colors.dark["300"],
 }
 
 theme.insert.a.bg = colors.green["400"]

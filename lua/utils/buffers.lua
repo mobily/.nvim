@@ -19,8 +19,7 @@ M.close_buffer = function(bufnr)
     vim.cmd(vim.bo.buflisted and "set nobl | enew" or "hide")
   else
     bufnr = bufnr or vim.api.nvim_get_current_buf()
-    local bufhidden = vim.bo.bufhidden
-
+    -- local bufhidden = vim.bo.bufhidden
     local bufinfo = M.head(vim.fn.getbufinfo(bufnr))
 
     if bufinfo and bufinfo.changed == 0 then
@@ -34,14 +33,11 @@ M.close_buffer = function(bufnr)
 end
 
 M.is_focused_buffer = function(...)
-  local bufname = vim.fn.expand "%"
+  local bufname = vim.fn.expand("%")
 
-  return fn.isome(
-    {...},
-    function(value)
-      return value == bufname
-    end
-  )
+  return fn.isome({ ... }, function(value)
+    return value == bufname
+  end)
 end
 
 M.is_not_focused_buffer = function(...)

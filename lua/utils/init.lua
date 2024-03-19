@@ -8,14 +8,14 @@ end
 
 M.keymap_factory = function(mode)
   return function(keybind, custom, description, opts)
-    local options = {noremap = true, silent = true}
+    local options = { noremap = true, silent = true }
 
     if opts then
       options = vim.tbl_extend("force", options, opts)
     end
 
     if description then
-      options = vim.tbl_extend("force", options, {desc = description})
+      options = vim.tbl_extend("force", options, { desc = description })
     end
 
     vim.keymap.set(mode, keybind, custom, options)
@@ -49,12 +49,6 @@ M.cmd = function(str)
   return "<cmd> " .. str .. " <CR>"
 end
 
-M.load_plugin = function(name)
-  return function()
-    require("plugins." .. name)
-  end
-end
-
 M.schedule = function(fn, ms)
   ms = ms or 5
   local timer = vim.loop.new_timer()
@@ -65,15 +59,13 @@ M.preserve_cursor_position = function(fn)
   local line, col = unpack(vim.api.nvim_win_get_cursor(0))
   fn()
 
-  M.schedule(
-    function()
-      local lastline = vim.fn.line("$")
-      if line > lastline then
-        line = lastline
-      end
-      vim.api.nvim_win_set_cursor(0, {line, col})
+  M.schedule(function()
+    local lastline = vim.fn.line("$")
+    if line > lastline then
+      line = lastline
     end
-  )
+    vim.api.nvim_win_set_cursor(0, { line, col })
+  end)
 end
 
 M.normalize_path = function(path)
@@ -95,8 +87,7 @@ M.get_selected_content = function()
     end_pos = start_pos
   end
 
-  local content =
-    table.concat(
+  local content = table.concat(
     vim.api.nvim_buf_get_text(curr_buffer, start_pos[2] - 1, start_pos[3] - 1, end_pos[2] - 1, end_pos[3] - 1, {}),
     "\n"
   )
@@ -123,14 +114,20 @@ M.common_keymaps = {
   "u",
   "g",
   "h",
-  "f"
+  "f",
 }
 
 M.to_macos_keys = function(keymap)
-  return keymap:gsub("CR", "↩"):gsub("<", ""):gsub(">", ""):gsub("-", " "):gsub("D", "⌘"):gsub("A", "⌥"):gsub("C", "⌃"):gsub(
-    "BS",
-    "⌫"
-  ):gsub("leader", vim.g.mapleader .. " ")
+  return keymap
+    :gsub("CR", "↩")
+    :gsub("<", "")
+    :gsub(">", "")
+    :gsub("-", " ")
+    :gsub("D", "⌘")
+    :gsub("A", "⌥")
+    :gsub("C", "⌃")
+    :gsub("BS", "⌫")
+    :gsub("leader", vim.g.mapleader .. " ")
 end
 
 return M

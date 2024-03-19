@@ -7,15 +7,14 @@ M.gen_from_buffer_lines = function(opts)
 
   opts = opts or {}
 
-  local displayer =
-    entry_display.create {
+  local displayer = entry_display.create({
     items = {
-      {remaining = true}
-    }
-  }
+      { remaining = true },
+    },
+  })
 
   local make_display = function(entry)
-    return displayer {
+    return displayer({
       -- {entry.lnum, opts.lnum_highlight_group or "TelescopeResultsSpecialComment"},
       {
         entry.text,
@@ -32,22 +31,19 @@ M.gen_from_buffer_lines = function(opts)
           -- end
 
           -- return result
-        end
-      }
-    }
+        end,
+      },
+    })
   end
 
   return function(entry)
-    return make_entry.set_default_entry_mt(
-      {
-        ordinal = entry.text,
-        display = make_display,
-        filename = entry.filename,
-        lnum = entry.lnum,
-        text = entry.text
-      },
-      opts
-    )
+    return make_entry.set_default_entry_mt({
+      ordinal = entry.text,
+      display = make_display,
+      filename = entry.filename,
+      lnum = entry.lnum,
+      text = entry.text,
+    }, opts)
   end
 end
 

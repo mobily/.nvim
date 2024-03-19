@@ -3,116 +3,116 @@ local M = {}
 M.dev = {
   default_icon = {
     icon = "",
-    name = "Default"
+    name = "Default",
   },
   c = {
     icon = "",
-    name = "c"
+    name = "c",
   },
   css = {
     icon = "",
-    name = "css"
+    name = "css",
   },
   deb = {
     icon = "",
-    name = "deb"
+    name = "deb",
   },
   Dockerfile = {
     icon = "",
-    name = "Dockerfile"
+    name = "Dockerfile",
   },
   html = {
     icon = "",
-    name = "html"
+    name = "html",
   },
   jpeg = {
     icon = "",
-    name = "jpeg"
+    name = "jpeg",
   },
   jpg = {
     icon = "",
-    name = "jpg"
+    name = "jpg",
   },
   js = {
     icon = "",
-    name = "js"
+    name = "js",
   },
   kt = {
     icon = "󱈙",
-    name = "kt"
+    name = "kt",
   },
   lock = {
     icon = "",
-    name = "lock"
+    name = "lock",
   },
   lua = {
     icon = "",
-    name = "lua"
+    name = "lua",
   },
   mp3 = {
     icon = "",
-    name = "mp3"
+    name = "mp3",
   },
   mp4 = {
     icon = "",
-    name = "mp4"
+    name = "mp4",
   },
   out = {
     icon = "",
-    name = "out"
+    name = "out",
   },
   png = {
     icon = "",
-    name = "png"
+    name = "png",
   },
   py = {
     icon = "",
-    name = "py"
+    name = "py",
   },
   ["robots.txt"] = {
     icon = "ﮧ",
-    name = "robots"
+    name = "robots",
   },
   toml = {
     icon = "",
-    name = "toml"
+    name = "toml",
   },
   ts = {
     icon = "ﯤ",
-    name = "ts"
+    name = "ts",
   },
   ttf = {
     icon = "",
-    name = "TrueTypeFont"
+    name = "TrueTypeFont",
   },
   rb = {
     icon = "",
-    name = "rb"
+    name = "rb",
   },
   rpm = {
     icon = "",
-    name = "rpm"
+    name = "rpm",
   },
   vue = {
     icon = "﵂",
-    name = "vue"
+    name = "vue",
   },
   woff = {
     icon = "",
-    name = "WebOpenFontFormat"
+    name = "WebOpenFontFormat",
   },
   woff2 = {
     icon = "",
-    name = "WebOpenFontFormat2"
+    name = "WebOpenFontFormat2",
   },
   xz = {
     icon = "",
-    name = "xz"
+    name = "xz",
   },
   zip = {
     icon = "",
-    name = "zip"
-  }
+    name = "zip",
+  },
 }
 
 M.lsp = {
@@ -153,13 +153,13 @@ M.lsp = {
   Calendar = "",
   Watch = " ",
   Package = "",
-  Copilot = " "
+  Copilot = " ",
 }
 
 M.status = {
   error = "",
   warning = "",
-  info = ""
+  info = "",
 }
 
 return M

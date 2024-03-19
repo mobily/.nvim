@@ -19,7 +19,7 @@ local hls = {
   require("hls.mind"),
   require("hls.rainbow"),
   require("hls.journal"),
-  require("hls.nui")
+  require("hls.nui"),
 }
 
 for _, hl in pairs(hls) do
