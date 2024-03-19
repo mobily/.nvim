@@ -55,9 +55,9 @@ return {
     fg = colors.dark["50"],
     bg = colors.dark["500"],
   },
-  WinSeparator = {
-    fg = colors.dark["600"],
-  },
+  -- WinSeparator = {
+  --   fg = colors.dark["600"],
+  -- },
   WinSeparator = {
     fg = colors.dark["400"],
   },
