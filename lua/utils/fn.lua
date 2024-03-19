@@ -281,4 +281,15 @@ function M.preserve_cursor_position(fn)
   end)
 end
 
+function M.log(...)
+  local is_fidget_installed, fidget = pcall(require, "fidget")
+  local debug_value = vim.inspect({ ... })
+
+  if is_fidget_installed then
+    return fidget.notify(debug_value)
+  end
+
+  vim.notify(debug_value)
+end
+
 return M

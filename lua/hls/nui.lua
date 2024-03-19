@@ -1,10 +1,10 @@
 local colors = require("ui.colors")
 
 return {
-  NuiComponentsTreeItemFocused = {
+  NuiComponentsTreeNodeFocused = {
     bg = colors.dark["400"],
   },
-  NuiComponentsSelectItemFocused = {
+  NuiComponentsSelectNodeFocused = {
     bg = colors.dark["400"],
   },
   NuiComponentsSelectOption = {
@@ -17,13 +17,10 @@ return {
     fg = colors.yellow["200"],
     -- fg = colors.dark["300"]
   },
-  NuiComponentsFooterConfirmButton = {
-    fg = colors.yellow["300"],
-  },
-  NuiComponentsFooterCancelButton = {
+  NuiComponentsButtonActive = {
     fg = colors.primary["700"],
+    bg = colors.green["100"],
   },
-  NuiComponentsButton = {},
   NuiComponentsButtonFocused = {
     fg = colors.primary["700"],
     bg = colors.yellow["100"],
@@ -62,5 +59,9 @@ return {
   },
   NuiComponentsTreeSpectreReplaceSuccess = {
     fg = colors.green["200"],
+  },
+  NuiComponentsBorderLabel = {
+    fg = colors.dark["500"],
+    bg = colors.primary["300"],
   },
 }

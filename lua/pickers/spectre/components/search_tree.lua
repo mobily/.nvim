@@ -20,8 +20,8 @@ local function mappings(search_query, replace_query)
     return {
       {
         mode = { "n" },
-        from = "r",
-        to = function()
+        key = "r",
+        handler = function()
           local tree = component:get_tree()
           local focused_node = component:get_focused_node()
 
@@ -44,8 +44,8 @@ local function mappings(search_query, replace_query)
               cwd = vim.fn.getcwd(),
               display_lnum = 0,
               filename = entry.filename,
-              search_text = search_query:get(),
-              replace_text = replace_query:get(),
+              search_text = search_query:get_value(),
+              replace_text = replace_query:get_value(),
             })
           end
         end,
@@ -63,22 +63,22 @@ local function prepare_node(node, line, component)
   if has_children then
     local icon, icon_highlight = devicons.get_icon(node.text, string.match(node.text, "%a+$"), { default = true })
 
-    line:append(node:is_expanded() and " " or " ", component:make_hl("SpectreIcon"))
+    line:append(node:is_expanded() and " " or " ", component:hl_group("SpectreIcon"))
     line:append(icon .. " ", icon_highlight)
-    line:append(node.text, component:make_hl("SpectreFileName"))
+    line:append(node.text, component:hl_group("SpectreFileName"))
 
     return line
   end
 
   local is_replacing = #node.diff.replace > 0
-  local search_highlight_group = component:make_hl(is_replacing and "SpectreSearchOldValue" or "SpectreSearchValue")
-  local default_text_highlight = component:make_hl("SpectreCodeLine")
+  local search_highlight_group = component:hl_group(is_replacing and "SpectreSearchOldValue" or "SpectreSearchValue")
+  local default_text_highlight = component:hl_group("SpectreCodeLine")
 
   local _, empty_spaces = string.find(node.diff.text, "^%s*")
   local ref = node.ref
 
   if ref then
-    line:append("✔ ", component:make_hl("SpectreReplaceSuccess"))
+    line:append("✔ ", component:hl_group("SpectreReplaceSuccess"))
   end
 
   if #node.diff.search > 0 then
@@ -100,7 +100,7 @@ local function prepare_node(node, line, component)
       if replace_diff_value then
         local replace_text =
           string.sub(code_text, replace_diff_value[1] + 1 - empty_spaces, replace_diff_value[2] - empty_spaces)
-        line:append(replace_text, component:make_hl("SpectreSearchNewValue"))
+        line:append(replace_text, component:hl_group("SpectreSearchNewValue"))
         end_ = replace_diff_value[2] - empty_spaces
       end
 
@@ -123,6 +123,7 @@ local function on_select(origin_winid)
       else
         node:expand()
       end
+
       return tree:render()
     end
 
@@ -140,13 +141,19 @@ local function on_select(origin_winid)
 end
 
 local function search_tree(props)
-  props = fn.merge({
+  return n.tree({
+    border_style = "none",
+    flex = 1,
+    padding = {
+      left = 1,
+      right = 1,
+    },
+    hidden = props.hidden,
+    data = props.data,
     mappings = mappings(props.search_query, props.replace_query),
     prepare_node = prepare_node,
     on_select = on_select(props.origin_winid),
-  }, props)
-
-  return n.tree(props)
+  })
 end
 
 return search_tree

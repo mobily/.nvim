@@ -351,7 +351,7 @@ return {
           vim.api.nvim_create_autocmd("BufUnload", {
             buffer = 0,
             callback = function()
-              vim.opt.laststatus = old_laststatus
+              -- vim.opt.laststatus = old_laststatus
             end,
           })
 
@@ -1916,7 +1916,13 @@ return {
           pcall(io.popen, "ollama serve > /dev/null 2>&1 &")
         end,
         -- Function to initialize Ollama
-        command = "curl --silent --no-buffer -X POST http://localhost:11434/api/generate -d $body",
+        command = function(options)
+          return "curl --silent --no-buffer -X POST http://"
+            .. options.host
+            .. ":"
+            .. options.port
+            .. "/api/chat -d $body"
+        end,
         -- The command for the Ollama service. You can use placeholders $prompt, $model and $body (shellescaped).
         -- This can also be a lua function returning a command string, with options as the input parameter.
         -- The executed command must return a JSON object with { response, context }

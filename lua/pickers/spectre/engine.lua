@@ -9,12 +9,10 @@ local fn = require("utils.fn")
 
 local M = {}
 
-M.groups = {}
-
 function M.process(options)
   options = options or {}
 
-  return fn.kmap(M.groups, function(group, filename)
+  return fn.kmap(spectre_state.groups, function(group, filename)
     local children = fn.imap(group, function(entry)
       local id = tostring(math.random())
 
@@ -41,7 +39,7 @@ local function search_handler(options, signal)
   local start_time = 0
   local total = 0
 
-  M.groups = {}
+  spectre_state.groups = {}
 
   return {
     on_start = function()
@@ -53,11 +51,11 @@ local function search_handler(options, signal)
         return
       end
 
-      if not M.groups[item.filename] then
-        M.groups[item.filename] = {}
+      if not spectre_state.groups[item.filename] then
+        spectre_state.groups[item.filename] = {}
       end
 
-      table.insert(M.groups[item.filename], item)
+      table.insert(spectre_state.groups[item.filename], item)
       total = total + 1
     end,
     on_error = function(_) end,
@@ -68,8 +66,8 @@ local function search_handler(options, signal)
 
       local end_time = (vim.loop.hrtime() - start_time) / 1E9
 
-      signal.search_info = string.format("Total: %s match, time: %ss", total, end_time)
       signal.search_results = M.process(options)
+      signal.search_info = string.format("Total: %s match, time: %ss", total, end_time)
 
       spectre_state.finder_instance = nil
       spectre_state.is_running = false

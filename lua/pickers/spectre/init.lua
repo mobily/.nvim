@@ -49,7 +49,7 @@ function M.toggle()
       end
     end
 
-    if not (prev.replace_query == curr.replace_query) then
+    if not (prev.replace_query == curr.replace_query) and #curr.search_query > 2 then
       signal.search_results = engine.process(curr)
     end
   end)
@@ -57,8 +57,8 @@ function M.toggle()
   renderer:add_mappings({
     {
       mode = { "n", "i" },
-      from = "<leader>c",
-      to = function()
+      key = "<leader>c",
+      handler = function()
         renderer:close()
       end,
     },
@@ -86,11 +86,9 @@ function M.toggle()
         if is_checked then
           local replace_component = renderer:get_component_by_id("replace_query")
 
-          if replace_component then
-            vim.schedule(function()
-              replace_component:focus()
-            end)
-          end
+          renderer:schedule(function()
+            replace_component:focus()
+          end)
         end
       end,
     }),
@@ -98,7 +96,7 @@ function M.toggle()
       n.columns(
         { size = 3 },
         n.text_input({
-          focus = true,
+          autofocus = true,
           flex = 1,
           max_lines = 1,
           border_label = "Search",
@@ -150,7 +148,8 @@ function M.toggle()
           end),
         },
         n.gap(1),
-        n.text(signal.search_info, {
+        n.paragraph({
+          lines = signal.search_info,
           padding = {
             left = 1,
             right = 1,
@@ -159,12 +158,8 @@ function M.toggle()
       ),
       n.gap(1),
       search_tree({
-        style = "none",
-        flex = 1,
-        padding = {
-          left = 1,
-          right = 1,
-        },
+        search_query = signal.search_query,
+        replace_query = signal.replace_query,
         data = signal.search_results,
         origin_winid = renderer:get_origin_winid(),
         hidden = signal.search_results:map(function(value)
